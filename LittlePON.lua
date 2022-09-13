@@ -1,7 +1,7 @@
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Robojini/Tuturial_UI_Library/main/UI_Template_1"))()
-local Window = Library.CreateLib("LittlePON V1 Test Version", "RJTheme3")
+local Window = Library.CreateLib("LittlePON V1 Test Version", "RJTheme4")
 local Tab = Window:NewTab("Main")
 local Section = Tab:NewSection("esp")
 Section:NewButton("Esp on", "Shows other players through walls, etc.", function()
@@ -334,6 +334,108 @@ end)
 Section:NewSlider("JumpHight", "Edit your Gravity", 50, 200, function(s) -- 500 (Макс. значение) | 0 (Мин. значение)
     game.Workspace.Gravity = s
 end)
+
 Section:NewButton("Leave(kick from server)", "Script kick you from server", function()
     game:service('Players').LocalPlayer:Kick('Script kick you =3')
+end)
+
+local Tab = Window:NewTab("Misc")
+local Section = Tab:NewSection("FLY tap")
+
+Section:NewToggle("Toggle FLy", "Turn on Fly", function(state)
+    if state then
+		Notification:Notify(
+    {Title = "Script", Description = "Fly ON"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
+)
+                
+				loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/scripts/main/FLY.lua"))() 
+Fly(true)
+
+else
+	Notification:Notify(
+    {Title = "Script", Description = "Fly OFF"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
+)
+                
+				loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/scripts/main/FLY.lua"))() 
+Fly(false)
+
+    end
+end)
+local Section = Tab:NewSection("GodMode")
+Section:NewButton("GodMode on", "You GOD!", function()
+    game.Players.LocalPlayer.Character.Humanoid:Remove()
+
+Notification:Notify(
+    {Title = "Script", Description = "ERROR 207(Game not Supported)"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
+)
+
+end)
+local Section = Tab:NewSection("Telepot")
+
+Section:NewButton("TP UP", "Teleport you on sky", function()
+    Notification:Notify(
+    {Title = "Script", Description = "Teleport"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
+)
+wait(1)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(205.944122, 2785.56445, -131.61937, -0.996191084, 0.0840699226, -0.0231415443, 1.62679861e-08, 0.265394598, 0.964139879, 0.0871968046, 0.960467577, -0.264383733)
+end)
+
+Section:NewButton("TP Down", "Teleport you on dirty", function()
+    Notification:Notify(
+    {Title = "Script", Description = "Teleport"},
+    {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
+)
+wait(1)
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(273.936829, -399.729706, 388.207977, 0.771613479, -0.113897905, 0.625811398, 1.48162911e-07, 0.983838379, 0.17905876, -0.636091709, -0.138164058, 0.759142995)
+end)
+
+local Tab = Window:NewTab("Universal Scripts")
+local Section = Tab:NewSection("Scripts")
+
+
+Section:NewButton("Infinite Yield", "ButtonInfo", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/scripts/main/Infinite%20Yielt.lua", true))()
+end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local Tab = Window:NewTab("Games Scripts")
+local Section = Tab:NewSection("Scripts")
+
+Section:NewButton("Vxpe V4 (for bedwars)", "Very good bedwars script!", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua", true))()
+end)
+
+Section:NewLabel("no Key")
+
+Section:NewButton("NUKEvsCITY(ManyGames)", "MAAAAAAAAAAAANY GAMES", function()
+
+ _G.key = "iloverobucs" --the key is between the two " "
+loadstring(game:HttpGet("https://raw.githubusercontent.com/NukeVsCity/TheALLHACKLoader/main/NukeLoader"))()
+
 end)
