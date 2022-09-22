@@ -560,6 +560,9 @@ end)
 
 
 
+Section:NewButton("AimBot", "Aim on players", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/scripts/main/Aim.lua", true))()
+end)
 
 
 
@@ -615,7 +618,11 @@ end)
 
 
 
-
+local Tab = Window:NewTab("Gui")
+local Section = Tab:NewSection("Toggle Gui")
+Section:NewKeybind("Toggle Gui", "", Enum.KeyCode.LeftControl, function()
+	Library:ToggleUI()
+end)
 
 
 
@@ -687,7 +694,4 @@ local Tab = Window:NewTab("Credits")
 local Section = Tab:NewSection("Script by Doku & Brinen")
 Section:NewLabel("Script Version 1.4")
 Section:NewLabel("New Update")
-Section:NewLabel("Add Credits and New funcion")
-Section:NewLabel("MoneyBag FE")
-Section:NewLabel("Add FlyToggle, GodMode, Teleport")
-Section:NewLabel("Key Strokes")
+Section:NewLabel("Aim Update v2")
