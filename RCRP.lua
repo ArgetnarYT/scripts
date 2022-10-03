@@ -1,7 +1,6 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-
 local Window = OrionLib:MakeWindow({Name = "Redcliff City RP", HidePremium = true, SaveConfig = true, ConfigFolder = "Redcliff Exploit"})
 local Tab = Window:MakeTab({
 	Name = "Main",
@@ -49,19 +48,6 @@ Tab:AddSlider({
 	ValueName = "Speed",
 	Callback = function(s)
 		 game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
-	end    
-})
-
-Tab:AddSlider({
-	Name = "JumpPower",
-	Min = 0,
-	Max = 50,
-	Default = 5,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 1,
-	ValueName = "Jump Power",
-	Callback = function(s)
-		 game.Players.LocalPlayer.Character.Humanoid.JumpPower = (s)
 	end    
 })
 
