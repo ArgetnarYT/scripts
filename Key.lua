@@ -1,2 +1,2 @@
-_G.EnterKey = "1kTMk8G9jlUmaTpgyqBlBT8kbqWsVmfm" -- Key Here
+_G.EnterKey = "mOyzPmHFzqhcs4AbrUXrIHqjjN1kX5q8" -- Key Here
 _G.KeyInput = "string"
