@@ -81,7 +81,6 @@ local T = X.New({Title = "Teleports"})
 local U = X.New({Title = "Ui's"})
 
 local C = X.New({Title = "Credits"})
-
 --Main
 
 Y.Toggle({
