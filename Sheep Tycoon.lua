@@ -151,48 +151,38 @@ end
   	end    
 })
 
-Tab:AddButton({
-	Name = "Autofarm on!",
-	Callback = function()
-      		getgenv().auto = true
-while task.wait() and auto do
- game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(17)
-end
-  	end    
-})
-Tab:AddButton({
-	Name = "AutoFarm off!",
-	Callback = function()
-      		getgenv().auto = false
-while task.wait() and auto do
- game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(17)
-end
-  	end    
-})
+Tab:AddToggle({
+    Name = "Auto Obby",
+    Default = false,
+    Callback = function(AutoObby)
 
-
-Tab:AddButton({
-	Name = "Auto obby",
-	Callback = function()
-OrionLib:MakeNotification({
+    OrionLib:MakeNotification({
 	Name = "Script",
 	Content = "this script was made 1234567#3209",
 	Image = "rbxassetid://4483345998",
 	Time = 5
-})
+}) 
 setclipboard("1234567#3209")
-
-
 local Player = game:GetService("Players").LocalPlayer.Name
-
-_G.doublemoney = true
-while _G.doublemoney == true do
-game:GetService("Workspace")[(Player)].HumanoidRootPart.CFrame = CFrame.new(-935.611084, 186.181, 837.546143, 0, 0, 1, 0, 1, -0, -1, 0, 0)
-wait()
-end
-  	end    
+        _G.doublemoney = AutoObby
+        while _G.doublemoney == true do
+        game:GetService("Workspace")[(Player)].HumanoidRootPart.CFrame = CFrame.new(-935.611084, 186.181, 837.546143, 0, 0, 1, 0, 1, -0, -1, 0, 0)
+        wait()
+        end
+    end   
 })
 
+Tab:AddToggle({
+    Name = "Auto Wool",
+    Default = false,
+    Callback = function(AutoFarm)
+        _G.autowool = AutoFarm
+while _G.autowool == true do
+    game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(17)
+    wait()
+    end
+end
+})
 
 
 
