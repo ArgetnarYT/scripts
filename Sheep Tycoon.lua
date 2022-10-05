@@ -170,45 +170,48 @@ end
   	end    
 })
 
+
 Tab:AddButton({
-	Name = "Auto obby+2x"
+	Name = "Auto obby",
 	Callback = function()
-			local Player = game:GetService("Players").LocalPlayer.Name
+OrionLib:MakeNotification({
+	Name = "Script",
+	Content = "this script was made 1234567#3209",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+setclipboard("1234567#3209")
+
+
+local Player = game:GetService("Players").LocalPlayer.Name
 
 _G.doublemoney = true
 while _G.doublemoney == true do
 game:GetService("Workspace")[(Player)].HumanoidRootPart.CFrame = CFrame.new(-935.611084, 186.181, 837.546143, 0, 0, 1, 0, 1, -0, -1, 0, 0)
 wait()
 end
-
-OrionLib:MakeNotification({
-	Name = "Script"
-	Content = "this script was made 1234567#3209",
-	Image = "rbxassetid://4483345998",
-	Time = 5
-})
   	end    
 })
 
 
-Tab:AddButton({
-	Name = "Auto Upgrade"
-	Callback = function()
-      		local Player = game:GetService("Players").LocalPlayer.Name
 
-_G.doublemoney = true
-while _G.doublemoney == true do
-game:GetService("Workspace")[(Player)].HumanoidRootPart.CFrame = CFrame.new(373.492767, 3.96199751, 653.940735, 0.0610412732, -0.153412193, 0.986275136, 8.30876967e-09, 0.988117754, 0.153698802, -0.998135269, -0.00938196294, 0.0603159666)
-wait()
-end
-  	end    
-})
-Tab:AddButton({
-	Name = "give Wools!83.1m"
-	Callback = function()
-      		loadstring(game:HttpGet('https://raw.githubusercontent.com/Tamachiru/AppleX/main/Wool'))()
-  	end    
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -226,7 +229,7 @@ local Credits = Window:MakeTab({
 	Icon = "rbxassetid://4483345998",
 	PremiumOnly = false
 })
-Credits:AddParagraph("Made by:","Brinen & Argetnar & Doku & 1234567#3209")
+Credits:AddParagraph("Made by:","Brinen & Argetnar & Doku & 1234567#3209.")
 wait(0.5)
 Credits:AddParagraph("Script on Sheep Tycoon 🐑","")
 
