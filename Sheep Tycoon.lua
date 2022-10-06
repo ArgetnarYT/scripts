@@ -2,7 +2,7 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
-local Window = OrionLib:MakeWindow({Name = "Sheep Tycoon 🐑", HidePremium = true, SaveConfig = true, ConfigFolder = "Redcliff Exploit"})
+local Window = OrionLib:MakeWindow({Name = "Sheep Tycoon 🐑", HidePremium = true, SaveConfig = true, ConfigFolder = "Argetnar Hack"})
 local Tab = Window:MakeTab({
 	Name = "Main",
 	Icon = "rbxassetid://4483345998",
@@ -184,8 +184,17 @@ while _G.autowool == true do
 end
 })
 
+Tab:AddButton({
+	Name = "Infinity Money[Test Version]",
+	Callback = function()
+      		local args = {
+    [1] = 17,
+    [2] = Vector3.new(-162.36593627929688, 3.311232566833496, 938.9034423828125)
+}
 
-
+game:GetService("ReplicatedStorage").Signals.RemoteEvents.GetWoolRemote:FireServer(unpack(args))
+  	end    
+})
 
 
 
