@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/scripts/main/LittlePON.lua"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
 local Window = Library.CreateLib("Argetnar KeyHub", "DarkTheme")
@@ -37,7 +37,7 @@ Notification:Notify(
 end
 
 local Section = Tab:NewSection("Key")
-Section:NewTextBox("TextboxText", "TextboxInfo", function(Value)
+Section:NewTextBox("Enter Key!", "Enter Key from discord", function(Value)
 	_G.KeyInput = Value
 end)
 Section:NewButton("Check Key!", "Cheking Your Key", function()
