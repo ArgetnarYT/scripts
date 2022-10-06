@@ -3,7 +3,7 @@ local NotificationHolder = loadstring(game:HttpGet("https://raw.githubuserconten
 local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
 local Window = Library.CreateLib("Argetnar KeyHub", "DarkTheme")
 local Tab = Window:NewTab("KeyTab")
-local Section = Tab:NewSection("Key")
+
 Notification:Notify(
     {Title = "Your in!", Description = "Argetnar KeyHub v132"},
     {OutlineColor = Color3.fromRGB(80, 80, 80),Time = 5, Type = "default"}
