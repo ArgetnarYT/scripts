@@ -1,108 +1,281 @@
-local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
-local Network = GameLibrary.Network
-local Run_Service = game:GetService("RunService")
-local rs = Run_Service.RenderStepped
-local check = checklists
-local lib = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
-local Library = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
-local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
-workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "join coin")
-workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "farm coin")
-local CoreGui = game:GetService("StarterGui")
-if workspace.__THINGS.__REMOTES:FindFirstChild("buy area") then 
-    buyarea = workspace.__THINGS.__REMOTES["buy area"]
-end
 
-local ID = {}
-local Name = {}
-for i,v in pairs(Library.Directory.Pets ) do
-    ID[i] = v.name
-    Name[v.name] = i
-end   
+    local SettingsTable = {
+      FarmNearest = nil;
+      FarmRandom = nil;
+      MultiTarget = false;
+      GemFarm = nil;
+      AreaFarm = nil;
+      FarmSelectedCoin = nil;
+      -----------------------------------------
+      FastColect = true;
+      LootBag = nil;
+      RankRew = nil;
+      FreeGift = nil;
+      RemEggAnimation = nil;
+   }
+  
+  game:GetService("Players").LocalPlayer.Idled:connect(
+  function()
+      game:GetService("VirtualUser"):Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+      wait(1)
+      game:GetService("VirtualUser"):Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+  end)
+      
+  -- \ Anti AFK
+     function GetMyPets()
+      local returntable = {}
+      for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+          if v.ClassName == 'TextButton' and v.Equipped.Visible then
+              table.insert(returntable, v.Name)
+          end
+      end
+      return returntable
+   end
+  
+  
+     local CurrentFarmingPets = {}
+     local pethingy = GetMyPets()
+     local cointhiny = nil
+     local cointhiny2 = nil
+  
+  
+     local areaTable = {
+      --Misc
+      ['VIP'] = {'VIP'};
+      --Spawn
+      ['Town'] = {'Town', 'Town FRONT'}; ['Forest'] = {'Forest', 'Forest FRONT'}; ['Beach'] = {'Beach', 'Beach FRONT'}; ['Mine'] = {'Mine', 'Mine FRONT'}; ['Winter'] = {'Winter', 'Winter FRONT'}; ['Glacier'] = {'Glacier', 'Glacier Lake'}; ['Desert'] = {'Desert', 'Desert FRONT'}; ['Volcano'] = {'Volcano', 'Volcano FRONT'}; ['Tech'] = {'Tech', 'Tech FRONT'};
+      -- Fantasy init
+      ['Enchanted Forest'] = {'Enchanted Forest', 'Enchanted Forest FRONT'}; ['Ancient Island'] = {'Ancient Island'}; ['Samurai Island'] = {'Samurai Island', 'Samurai Island FRONT'}; ['Candy Island'] = {'Candy Island'}; ['Haunted Island'] = {'Haunted Island', 'Haunted Island FRONT'}; ['Hell Island'] = {'Hell Island'}; ['Heaven Island'] = {'Heaven Island'};
+      -- Tech
+      ['Ice Tech'] = {'Ice Tech'}; ['Tech City'] = {'Tech City'; 'Tech City FRONT'}; ['Dark Tech'] = {'Dark Tech'; 'Dark Tech FRONT'}; ['Steampunk'] = {'Steampunk'; 'Steampunk FRONT'}, ['Alien Forest'] = {"Alien Forest"; "Alien Forest FRONT"}, ['Alien Lab'] = {"Alien Forest"; "Alien Lab FRONT"}, ['Glitch'] = {"Glitch"; "Glitch FRONT"}; ['Hacker Portal'] = {"Hacker Portal", "Hacker Portal FRONT"};
+      -- Axolotl
+      ['Axolotl Ocean'] = {'Axolotl Ocean', 'Axolotl Ocean FRONT'}; ['Axolotl Deep Ocean'] = {'Axolotl Deep Ocean', 'Axolotl Deep Ocean FRONT'}; ['Axolotl Cave'] = {'Axolotl Cave', 'Axolotl Cave FRONT'};
+  }
+  
+  local AreaList = {
+  'Town'; 'Forest'; 'Beach'; 'Mine'; 'Winter'; 'Glacier'; 'Desert'; 'Volcano'; -- Spawn World
+  'Enchanted Forest'; 'Ancient Island'; 'Samurai Island'; 'Candy Island'; 'Haunted Island'; 'Hell Island'; 'Heaven Island'; -- Fantasy World
+  'Ice Tech'; 'Tech City'; 'Dark Tech'; 'Steampunk'; 'Alien Lab'; 'Alien Forest'; 'Glitch'; "Hacker Portal"; -- Tech World
+  'Axolotl Ocean'; 'Axolotl Deep Ocean'; 'Axolotl Cave' -- Axolotl World
+  }
+  
+  
+     -------------------------------
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "buy egg")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "join coin")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "farm coin")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "claim orbs")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "change pet target")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "get trade")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "add trade pet")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "remove trade pet")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "convert to dark matter")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem dark matter pet")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem rank rewards")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem vip rewards")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "toggle setting")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("a", "activate boost")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "use golden machine")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "use rainbow machine")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "buy upgrade")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem merch code")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "redeem free gift")
+     workspace.__THINGS.__REMOTES.MAIN:FireServer("b", "fuse pets")
+     -------------------------------
+  
+     function FarmCoin(CoinID, PetID)
+      game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+      game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+   end
+     
+  
+         function GetThePets()
+          local returntable = {}
+          for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+              if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                  table.insert(returntable, v.Name)
+              end
+          end
+          return returntable
+       end
+  
+       local Chests = {
+           "All"; -- All Chests
+          -- Spawn
+          "Volcano Magma Chest",
+          -- Fantasy
+          "Ancient Island Enchanted Chest", "Hell Island Hell Chest", "Haunted Island Haunted Chest", "Heaven Island Angel Chest", "Heavens Gate Grand Heaven Chest",
+          -- Tech
+          "Giant Tech Chest", "Giant Steampunk Chest", "Giant Alien Chest",
+          -- Other 
+          "Giant Present",
+          -- Axolotl
+          "Giant Ocean Chest",
+          -- Pixel World
+          "Giant Pixel Chest"
+       }
+  ----locals
+     local check = checklists
+     local lib = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
+     local Library = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
+     local GameLibrary = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("Library"))
+
+
+--lib
+getgenv().UwU = loadstring(game:HttpGet"https://raw.githubusercontent.com/L1ZOT/Project-PJM/main/Notifycation")()
+local ArgetnarLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/ArgetnarYT/Library/main/ArgetnarLibrary.lua"))()
+local win = ArgetnarLib:Window("Argetnar Hub")
+
+ArgetnarLib:Notify("Script", "Loading.....")
+local TabFarm = win:Tab("Farm")
+
+TabFarm:Toggle("Auto Farm - Chest", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Gem Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Gem Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          SettingsTable.GemFarm = t
+end)
+
+TabFarm:Toggle("Auto Farm - Gems", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Gem Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Gem Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          SettingsTable.GemFarm = t
+end)
+
+TabFarm:Dropdown("Select Chest", "chests", Chests, function(v)
+     SelectChest = v
+end)
+
+TabFarm:Toggle("Auto Farm - Selected Coin", function(t)
+           if t then
+              getgenv().PromptGuioof:AddText("Farm Selected Coin = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Farm Selected Coin = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          FarmSelectedCoin = t
+end)
+
+TabFarm:Toggle("Ultra Area Farm (risk of getting Kicked!)", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Ultra Area Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Ultra Area Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          UltraAreaFarm = t
+end)
+TabFarm:Toggle("Auto Farm - Area", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Area Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Area Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          SettingsTable.AreaFarm = t
+end)
 
   
-local Closestcoin =  425
-function BringCoins()
-    local Returntable = {}
-    local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
-    for i,v in pairs(ListCoins) do
-        if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude < Closestcoin then
-            local Coin = v
-            Coin["index"] = i
-            table.insert(Returntable, Coin)
-            Closestcoin = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude
-        end
-    end
-    return Returntable
-end
+         local Areas = {'All'}
+         for i,v in pairs(game:GetService("ReplicatedStorage").Game.Coins:GetDescendants()) do
+             if v.ClassName=="Folder" and v.Name ~= "Spawn" and v.Name ~= "Fantasy"and v.Name ~= "Tech"and v.Name ~= "Other"and v.Name ~= "Axolotl"and v.Name ~= "Pixel"then
+                 table.insert(Areas, v.Name)
+             end
+         end
+
+TabFarm:Dropdown("Select Area", "SelArea", Areas, function(t)
+    SelectedArea = t
+end)
+
+      local noiceCoin = {
+          'Coins',
+          'Crate',
+          'Large Coins',
+          'Safe',
+          'Small Chest',
+          'Present',
+          'Large Present',
+          'Tiny Coins',
+          'Vault',
+          'Chest',
+          'Tech Cube',
+          'Small Tech Cube',
+      }
+
+TabFarm:Dropdown("Select Coin", "hope", noiceCoin, function(t)
+    SecCoin2 = t
+end)
 
 
- local firsteggtable = {};
- for i,v in pairs(Library.Directory.Pets) do
-  for i,v in pairs(v) do
-      if i == "name" then
-          table.insert(firsteggtable, v)
-      end
-  end
-end
-
-Eggs = {}
-for i,v in pairs(game.ReplicatedStorage.Game.Eggs:GetChildren()) do 
-    for i2,SecondEggTable in pairs(v:GetChildren()) do 
-        table.insert(Eggs, SecondEggTable.Name)
-    end 
-end
-
-function FindPlayersPets()
-    local returntable = {}
-    for i,v in pairs(GameLibrary.Save.Get().Pets) do
-        if v.e then 
-            table.insert(returntable, v.uid)
-        end
-    end
-    return returntable
- end
+TabFarm:Toggle("Auto Farm - Nearest", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Farm Nearest = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Farm Nearest = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          SettingsTable.FarmNearest = t
+end)
 
 
-local Material = loadstring(game:HttpGet("https://raw.githubusercontent.com/Blackout4781/Roblox-Scripts/main/ui.lua"))()
+TabFarm:Toggle("Auto Farm - MultiTarget", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("MultiTarget = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("MultiTarget = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          SettingsTable.MultiTarget = t
+end)
 
-local X = Material.Load({Title = "Argetnar Hub| ".. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name,Style = 1,SizeX = 615,SizeY = 400,Theme = Dark})    
 
-local Y = X.New({Title = "Main"})
+TabFarm:Toggle("Auto Farm - Coins by Health", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("Farm Coins by Health = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("Farm Coins by Health = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+          FarmCoinHealth = t
+end)
 
-local M = X.New({Title = "Misc"})
+         spawn(function()
+            while task.wait(.7) do
+                if game:GetService("Workspace")["__THINGS"].Orbs:FindFirstChildOfClass("Part") and (FarmCoinHealth 
+                or SettingsTable.MultiTarget or SettingsTable.FarmNearest or SettingsTable.AreaFarm 
+                or UltraAreaFarm or FarmSelectedCoin or SettingsTable.GemFarm or ChestFarm or SettingsTable.GemFarm) then
+                    local TweenService = game:GetService("TweenService")
 
-local E = X.New({Title = "Eggs"})
+                    for i,v in pairs(game:GetService("Workspace")["__THINGS"].Orbs:GetChildren()) do
+                        if v:IsA("Part") and v:FindFirstChild("Orb") then
+                            v.Orb.Sunray:Destroy()
+                            TweenService:Create(
+                                v,
+                                TweenInfo.new(.3, Enum.EasingStyle.Linear),
+                                {CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame}
+                            ):Play()
+                        end
+                    end
+                end
+            end
+        end)
+  
 
-local F = X.New({Title = "Fun - Visual"})
 
-local T = X.New({Title = "Teleports"})
 
-local U = X.New({Title = "Ui's"})
 
-local C = X.New({Title = "Credits"})
---Main
 
-Y.Toggle({
-    Text = 'Auto Farm - Nearest',
-    Enabled = false,
-    Callback = function(value)
-        getgenv().FarmNearest = value
-    end
-})
 
-Y.Toggle({
-    Text = 'Auto Farm - Gems',
-    Enabled = false,
-    Callback = function(value)
-        getgenv().FarmGems = value
-    end
-})
 
-Y.Toggle({
-    Text = 'Auto Pickup - Coins - Gems',
-    Enabled = false,
-    Callback = function(value)
+
+
+
+
+
+
+
+
+
+TabFarm:Toggle("Auto Pickup - Coins - Gems", function(value)
     getgenv().AutoCoin = value
         while getgenv().AutoCoin do task.wait() 
             for i,v in pairs(game:GetService("Workspace")["__THINGS"].Orbs:GetChildren()) do
@@ -112,211 +285,1262 @@ Y.Toggle({
                 end
             end
         end
-    end
-})
+end)
 
-Y.Toggle({
-    Text = 'Auto Unlock Worlds',
-    Enabled = false,
-    Callback = function(value)
-        getgenv().unlockworlds = value
-        while getgenv().unlockworlds do task.wait()
-            for index, value in next, game:GetService("Workspace")["__MAP"].Gates:GetChildren() do
-                buyarea:InvokeServer({value.Name})
-            end
-        end
-    end
-})
-
---Misc
-M.Toggle({
-    Text = 'Auto Gift',
-    Enabled = false,
-    Callback = function(value)
-        getgenv().GiftFarm = value
-        while getgenv().GiftFarm do task.wait()
-            pcall(function()
-                local args = {[1] = math.random(1, 12)}
-              workspace.__THINGS.__REMOTES["redeem free gift"]:InvokeServer(unpack(args))
-            end)
-        end    
-    end
-})
-M.Toggle({
-    Text = 'Anti Mod',
-    Enabled = false,
-    Callback = function(value)
-        getgenv().antiMod = value   
-    end
-})
-
-
-M.Toggle({
-    Text = 'Stat Tracker',
-    Enabled = false,
-    Callback = function(value)
-    stattracker = value
-    if stattracker then
-        local lib = require(game:GetService("ReplicatedStorage").Framework.Library)
-local Save = lib.Save.Get
-local Commas = lib.Functions.Commas
-local Types = {}
-local Menus = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right
-
-for i,v in pairs(Menus:GetChildren()) do
-if v.ClassName == "Frame" and v.Name ~= "Rank" and not string.find(v.Name, "2") then
-table.insert(Types, v.Name)
-end
-end
-
-function get(thistype)
-if game.PlaceId == 10321372166 and string.find(string.lower(thistype), "coins") then
-return Save().HardcoreCurrency[thistype]
-else
-return Save()[thistype]
-end
-end
-
-local LayoutOrders = {
-["Diamonds"] = 999910;
-["Halloween Candy"] = 999920;
-["Gingerbread"] = 999930;
-["Rainbow Coins"] = 999940;
-["Tech Coins"] = 999950;
-["Fantasy Coins"] = 999960;
-["Coins"] = 999970;
-}
-getgenv().MyTypes = {}
-for i,v in pairs(Menus:GetChildren()) do
-if string.find(v.Name, "2") then
-v:Destroy() 
-end
-end
-
-for i,v in pairs(Types) do
-if not Menus:FindFirstChild(v.."2") then
-Menus:WaitForChild(v).LayoutOrder = LayoutOrders[v]
-local tempmark = Menus:WaitForChild(v):Clone()
-tempmark.Name = tostring(tempmark.Name .. "2")
-tempmark.Size = UDim2.new(0, 170, 0, 30)
-tempmark.Parent = Menus
-tempmark.LayoutOrder = tempmark.LayoutOrder + 1
-tempmark.BackgroundColor3 = Color3.fromRGB(210,210,210)
-getgenv().MyTypes[v] = tempmark
-end
-end
-
-spawn(function() Menus:WaitForChild("Diamonds2").Add.Visible = false end)
-for i,v in pairs(Types) do
-spawn(function()
-repeat task.wait() until getgenv().MyTypes[v]
-local megatable = {}
-local imaginaryi = 1
-local ptime = 0
-local last = tick()
-local now = last
-local TICK_TIME = 0.5
-while true do
-    if ptime >= TICK_TIME then
-        while ptime >= TICK_TIME do ptime = ptime - TICK_TIME end
-        local currentbal = get(v)
-        megatable[imaginaryi] = currentbal
-        local diffy = currentbal - (megatable[imaginaryi-120] or megatable[1])
-        imaginaryi = imaginaryi + 1
-        getgenv().MyTypes[v].Amount.Text = tostring(Commas(diffy).." in 60s")
-        getgenv().MyTypes[v].Amount_odometerGUIFX.Text = tostring(Commas(diffy).." in 60s")
-    end
-    task.wait()
-    now = tick()
-    ptime = ptime + (now - last)
-    last = now
-end
-end) 
-end
-    else
-        local Menus = game:GetService("Players").LocalPlayer.PlayerGui.Main.Right
-        for i,v in pairs(Menus:GetChildren()) do
-            if string.find(v.Name, "2") then
-                v:Destroy() 
-            end
-        end
-    end
-end})
-
-M.Button({ Text = "No Coin Animation", Callback = function()
-    game:GetService("Players").LocalPlayer.PlayerScripts.Scripts.GUIs["Coin Rewards HUD"].Disabled = true
-    if game:GetService("Workspace"):FindFirstChild("__DEBRIS") then
-      game:GetService("Workspace")["__DEBRIS"]:Destroy()
+TabFarm:Toggle("Auto equip best pets", function(t)
+          getgenv().BestPet = t
+          while wait() do
+              if getgenv().BestPet == true then
+          pcall(function()
+  local args = {
+      [1] = {}
+  }
+  workspace.__THINGS.__REMOTES:FindFirstChild("equip best pets"):InvokeServer(unpack(args))
+          end)
       end
-end})
+  end
+end)
 
-M.Button({ Text = "Get All Gamepasses", Callback = function()
-    local pass = require(game:GetService("ReplicatedStorage").Framework.Client["5 | Gamepasses"])
+local TabBuy = win:Tab("Misc")
+TabBuy:Toggle("Anti Mod", function(value)
+        getgenv().antiMod = value   
+end)
+
+TabBuy:Toggle("Auto Collect Gifts", function(t)
+      SettingsTable.FreeGift = t
+          while SettingsTable.FreeGift do task.wait()
+              pcall(function()
+                  --function getNil(name,class) for _,v in pairs(getnilinstances())do if v.ClassName==class and v.Name==name then return v;end end end
+                local ohTable1 = {
+                   [1] = math.random(1, 12)
+                }
+                workspace.__THINGS.__REMOTES["redeem free gift"]:InvokeServer(ohTable1)
+              end)
+          end
+end)
+
+TabBuy:Button("Get All Gamepasses", function()
+        local pass = require(game:GetService("ReplicatedStorage").Framework.Client["5 | Gamepasses"])
 
     pass.Owns = function() return true end
-end})
+end)
 
-M.Slider({
-	Text = "Speed",
-	Callback = function(Value)
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
-    end,
-	Min = 16,
-	Max = 1000,
-	Def = 16
-})
-
---Eggs
-F.Dropdown({Text = "Select Pet", Options = Eggs, Callback = function(v)
-    getgenv().selectPett = v
-end,
-})
-
-E.Toggle({
-    Text = 'Open Egg',
-    Enabled = false,
-    Callback = function(Value)
-     getgenv().AutoOpenEgg = Value
-        while task.wait() and getgenv().AutoOpenEgg do 
-            for i,v in pairs(care_packages) do 
-                local args = {[1] = {[1] = getgenv().selectPett,[2] = getgenv().TrippleEgg}}
-                workspace.__THINGS.__REMOTES:FindFirstChild("buy egg"):InvokeServer(unpack(args))
-            end
-        end
-    end
-})
-
-E.Toggle({
-    Text = 'Use Tripple Egg - Have Tripple Egg Gamepasse',
-    Enabled = false,
-    Callback = function(Value)
-     getgenv().TrippleEgg = Value
-    end
-})
-
-local ScriptPathh = game.Players.LocalPlayer.PlayerScripts.Scripts.Game['Open Eggs']
-local OldFunction = getsenv(ScriptPathh).OpenEgg
-E.Toggle({
-    Text = 'No Egg Animation',
-    Enabled = false,
-    Callback = function(delanimation)
+TabBuy:Toggle("No Egg Animation", function(value)
             if delanimation == true then 
         getsenv(ScriptPathh).OpenEgg = function() return end 
     else
         getsenv(ScriptPathh).OpenEgg = OldFunction
     end
-end})
+end)
 
---Fun
-F.Button({ Text = "Make All Pets Huge Santa", Callback = function()
+TabBuy:Toggle("World Hop", function(t)
+          if t then
+              getgenv().PromptGuioof:AddText("World Hop = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          else
+              getgenv().PromptGuioof:AddText("World Hop = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+          end
+              worldhop = t
+         end)
+  
+         local WorldTable = {
+             'Pixel',
+             'Axolotl Ocean', 'Fantasy', 'Spawn', 'Tech'
+         }
+end)
+
+TabFarm:Dropdown("Select Worlds", "worldsel", WorldTable, function()
+
+end)
+
+         spawn(function()
+          while task.wait(.5) do
+              if worldhop then
+                  pcall(function()
+                      for i,v in pairs(check["worldsel"].Value) do
+                          GameLibrary.WorldCmds.Load(v)
+                          wait(setTime or 5)
+                      end
+                  end)
+              else
+              end
+          end
+         end)
+
+
+TabBuy:TextBox("Type in Wait Time", function(t)
+setTime = t
+end)
+ maxhealth = 2500000000000000000
+
+TabBuy:Slider("Select Health", 1, maxhealth, 500, function(t)
+          SelHealth = t
+end)
+
+TabBuy:Slider("Select Distance", 1, 400, 307, function(t)
+          SelDistacne = v
+end)
+  
+  local CratesMasteryList = {"Town Crate"; "Forest Crate"; "Beach Crate"; "Mine Crate"; "Desert Crate"; "Volcano Crate"; "Winter Crate"; "Glacier Crate"; "Enchanted Forest Crate"; "Ancient Island Crate"; "Samurai Island Crate"; "Candy Island Crate"; "Haunted Island Crate"; "Hell Island Crate"; "Heaven Island Crate"; "Tech City Crate"; "Dark Tech Crate"; "Alien Forest Crate"; "Axolotl Ocean Crate"; "Pixel Forest Crate"; "Pixel Alps Crate";}
+  
+  local CoinsPilesMasteryList ={"Town Coins", "Town Large Coins", 'Town Tiny Coins', "Forest Coins", "Forest Large Coins", "Forest Tiny Coins", "Beach Coins", "Beach Large Coins", "Beach Tiny Coins", "Mine Coins", "Mine Large Coins", "Mine Tiny Coins", "Desert Coins", "Desert Large Coins", "Desert Tiny Coins", "Volcano Coins", "Volcano Large Coins", "Volcano Tiny Coins", "Winter Coins", "Winter Large Coins", "Winter Tiny Coins", "Glacier Coins", "Glacier Large Coins", "Glacier Tiny Coins", "Enchanted Forest Coins", "Enchanted Forest Large Coins", "Enchanted Forest Tiny Coins", "Ancient Island Coins", "Ancient Island Large Coins", "Ancient Island Tiny Coins", "Samurai Island Coins", "Samurai Island Large Coins", "Samurai Island Tiny Coins", "Candy Island Coins", "Candy Island Large Coins", "Candy Island Tiny Coins", "Haunted Island Coins", 'Haunted Island Large Coins', 'Haunted Island Tiny Coins', 'Heaven Island Coins', 'Heaven Island Large Coins', 'Heaven Island Tiny Coins', 'Tech City Coins', 'Tech City Large Coins', 'Tech City Tiny Coins', 'Dark Tech Coins', 'Dark Tech Large Coins', 'Dark Tech Tiny Coins', 'Steampunk Coins', 'Steampunk Large Coins', 'Steampunk Tiny Coins', 'Alien Lab Coins', 'Alien Lab Large Coins', 'Alien Lab Tiny Coins', 'Alien Forest Coins', 'Alien Forest Large Coins', 'Alien Forest Tiny Coins', 'Blue Glitched Coins', 'Blue Glitched Large Coins', 'Blue Glitched Tiny Coins', 'Pink Glitched Coins', 'Pink Glitched Large Coins', 'Pink Glitched Tiny Coins', 'Axolotl Ocean Coins', 'Axolotl Ocean Large Coins', 'Axolotl Ocean Tiny Coins', 'Pixel Forest Coins', 'Pixel Forest Large Coins', 'Pixel Forest Tiny Coins', 'Pixel Kyoto Coins', 'Pixel Kyoto Large Coins'}
+  
+  local ChestsMasteryList = {'Town Chest', "Forest Small Chest", "Forest Chest", "Beach Chest", "Beach Small Chest", "Mine Small Chest", "Mine Chest", "Desert Chest", "Desert Small Chest", "Winter Chest", "Winter Small Chest", "Glacier Chest", "Glacier Small Chest", "Enchanted Forest Chest", "Enchanted Forest Small Chest", "Samurai Island Chest", "Samurai Island Small Chest", "Candy Island Chest", "Candy Island Small Chest", "Hell Island Chest", 'Hell Island Small Chest', "Heaven Island Chest", 'Heaven Island Small Chest', "Axolotl Deep Ocean Chest", "Axolotl Deep Ocean Small Chest", "Pixel Forest Chest", 'Pixel Forest Small Chest', "Pixel Alps Chest", 'Pixel Alps Small Chest'}
+  
+  local PresentsMasteryList = {"Town Present", "Forest Present", "Beach Present", "Mine Present", "Desert Present", "Volcano Present", "Winter Present", "Glacier Present", "Enchanted Forest Present", "Ancient Island Present", "Samurai Island Present", "Candy Island Present", "Haunted Island Present", "Hell Island Present", "Heaven Island Present", "Tech City Present", "Dark Tech Present", "Alien Forest Present", "Blue Glitched Present", "Pink Glitched Present", "Axolotl Ocean Present", "Pixel Forest Present", "Pixel Kyoto Present", "Pixel Kyoto Large Present"}
+  
+  local VaultsSafesMasteryList = {"Forest Safe", "Forest Vault", "Beach Safe", "Beach Vault", "Mine Safe", "Mine Vault", "Desert Safe", "Desert Vault", "Volcano Safe", "Volcano Vault", "Winter Safe", "Winter Vault", "Glacier Safe", "Glacier Vault", "Enchanted Forest Safe", "Enchanted Forest Vault", "Ancient Island Vault", 'Ancient Island Safe', "Candy Island Vault", 'Candy Island Safe', "Haunted Island Vault", 'Haunted Island Safe', "Heaven Island Vault", 'Heaven Island Safe', "Tech City Vault", 'Tech City Safe', "Steampunk Vault", 'Steampunk Safe', "Alien Lab Vault", 'Alien Lab Safe', "Blue Glitched Vault", 'Blue Glitched Safe', "Pink Glitched Vault", 'Pink Glitched Safe', "Axolotl Deep Ocean Vault", 'Axolotl Deep Ocean Safe', "Pixel Forest Vault", 'Pixel Forest Safe', "Pixel Vault Safe", "Pixel Vault Vault"}
+
+  local DiamondsMasteryList = {"Diamonds", "Tiny Diamonds"}
+  local MasteryIndex = {"All", "Coins Piles Mastery", "Crates Mastery", "Chests Mastery", "Presents Mastery", "Vaults & Safes Mastery", "Diamonds Mastery"}
+TabFarm:Dropdown("Mastery List", "Mast", MasteryIndex, function(v)
+   hewoUwU = v
+end)
+TabFarm:Toggle("Auto Farm Mastery", function(t)
+      if t then
+          getgenv().PromptGuioof:AddText("Auto Farm Mastery = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      else
+          getgenv().PromptGuioof:AddText("Auto Farm Mastery = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      end
+      Mastery = t
+end)
+
+  spawn(function()
+      while task.wait(FarmingSpeed) do
+          if Mastery then
+              pcall(function()
+                  for i2, v2 in pairs(check["Mast"].Value) do
+                      if v2 == "Crates Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(CratesMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      elseif v2 == "All" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(CoinsPilesMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                          for i,v in pairs(DiamondsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                          for i,v in pairs(VaultsSafesMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                          for i,v in pairs(ChestsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                          for i,v in pairs(PresentsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+  
+  
+                      elseif v2 == "Coins Piles Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(CoinsPilesMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      elseif v2 == "Chests Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(ChestsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      elseif v2 == "Presents Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(PresentsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      elseif v2 == "Vaults & Safes Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(VaultsSafesMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      elseif v2 == "Diamonds Mastery" then
+                          local CurrentFarmingPets = {}
+                          local pethingy = GetMyPets()
+                          for i,v in pairs(DiamondsMastery()) do
+                              if v.index%#pethingy == #pethingy-1 then wait() end
+                              if not CurrentFarmingPets[pethingy[v.index%#pethingy+1]] or CurrentFarmingPets[pethingy[v.index%#pethingy+1]] == nil then
+                                  if game:GetService("Workspace")["__THINGS"].Coins:FindFirstChild(v.index) then
+                                      pcall(function()
+                                          CurrentFarmingPets[pethingy[v.index%#pethingy+1]] = 'Farming'
+                                          FarmCoin(v.index, pethingy[v.index%#pethingy+1])
+                                      end)
+                                  end
+                              end
+                          end
+                      end
+                  end
+              end)
+          end
+      end
+  end)
+  
+  function CratesMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(CratesMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(CratesMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+  
+  function CoinsPilesMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(CoinsPilesMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(CoinsPilesMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+  
+  function ChestsMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(ChestsMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(ChestsMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+  
+  function PresentsMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(PresentsMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(PresentsMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+  
+  function VaultsSafesMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(VaultsSafesMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(VaultsSafesMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+  
+  function DiamondsMastery()
+      local returntable = {}
+      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+      for i,v in pairs(ListCoins) do
+          local shit = v
+          shit["index"] = i
+          for aa,bb in pairs(DiamondsMasteryList) do
+              if string.find(v.n, bb) then
+                  local thing = string.gsub(v.n, bb.." ", " ")
+                  if table.find(DiamondsMasteryList, thing) then
+                      shit.n = thing
+                      table.insert(returntable, shit)
+                  end
+              end
+          end
+      end
+      return returntable
+  end
+
+TabFarm:Toggle("Hide Coin Health", function(v)
+          ShowHealt = v
+end)
+       spawn(function()
+          while task.wait() do
+              if ShowHealt then
+                  pcall(function()
+                      for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetDescendants()) do
+                          if v.Name == "HUD" then
+                              v:Destroy()
+                           end
+                       end
+                  end)
+              end
+          end
+         end)
+
+TabFarm:Toggle("Hide Coins", function(v)
+    print(tostring(Bool))
+end)
+  
+         spawn(function()
+          while task.wait() do
+              if ShowCoin then
+                  pcall(function()
+                      for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetChildren()) do
+                          v:Destroy()
+                      end
+                  end)
+              end
+          end
+         end)
+
+  function FarmCoin(CoinID, PetID)
+      game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+      game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+   end
+  
+   spawn(function()
+      while task.wait(FarmingSpeed) do
+          if ChestFarm then
+              pcall(function()
+  
+                  if fastoption then
+                      for i2, v2 in pairs(check["chests"].Value) do
+                      if v2 == 'All' then
+                          local function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                           end
+                      
+                           local function GetPet()
+                              local ReturnTable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                          table.insert(ReturnTable, v.Name)
+                                      end
+                                  end
+                              return ReturnTable
+                           end
+          
+                          local function GetCoins(chest)
+                              local ReturnTable = {}
+                              local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                              for i,v in pairs(ListCoins) do
+                                  if v.n == 'Volcano Magma Chest' or
+                                  v.n == "Ancient Island Enchanted Chest" or
+                                  v.n == "Hell Island Hell Chest" or
+                                  v.n == "Haunted Island Haunted Chest" or
+                                  v.n == "Heaven Island Angel Chest" or
+                                  v.n == "Heavens Gate Grand Heaven Chest" or
+                                  v.n == "Giant Tech Chest" or
+                                  v.n == "Giant Steampunk Chest" or
+                                  v.n == "Giant Alien Chest" or
+                                  v.n == "Giant Ocean Chest" or
+                                  v.n == "Giant Present"
+                                  then
+                                      local Coin = v
+                                      Coin["index"] = i
+                                      table.insert(ReturnTable, Coin)
+                                  end
+                              end
+                              return ReturnTable
+                          end
+          
+                          local PetThiny = GetPet()
+                          local Cointhiny = GetCoins()
+          
+                          for i = 1, #Cointhiny do
+                              coroutine.wrap(function()
+                              FarmCoin(Cointhiny[i].index, PetThiny[1])
+                              FarmCoin(Cointhiny[i].index, PetThiny[2])
+                              FarmCoin(Cointhiny[i].index, PetThiny[3])
+                              FarmCoin(Cointhiny[i].index, PetThiny[4])
+                              FarmCoin(Cointhiny[i].index, PetThiny[5])
+                              FarmCoin(Cointhiny[i].index, PetThiny[6])
+                              FarmCoin(Cointhiny[i].index, PetThiny[7])
+                              FarmCoin(Cointhiny[i].index, PetThiny[8])
+                              FarmCoin(Cointhiny[i].index, PetThiny[9])
+                              FarmCoin(Cointhiny[i].index, PetThiny[10])
+                              FarmCoin(Cointhiny[i].index, PetThiny[11])
+                              FarmCoin(Cointhiny[i].index, PetThiny[12])
+                              FarmCoin(Cointhiny[i].index, PetThiny[13])
+                              FarmCoin(Cointhiny[i].index, PetThiny[14])
+                              FarmCoin(Cointhiny[i].index, PetThiny[15])
+                              FarmCoin(Cointhiny[i].index, PetThiny[16])
+                              FarmCoin(Cointhiny[i].index, PetThiny[17])
+                              FarmCoin(Cointhiny[i].index, PetThiny[18])
+                              FarmCoin(Cointhiny[i].index, PetThiny[19])
+                              FarmCoin(Cointhiny[i].index, PetThiny[20])
+                              FarmCoin(Cointhiny[i].index, PetThiny[21])
+                              FarmCoin(Cointhiny[i].index, PetThiny[22])
+                              end)()
+                          end
+                      else
+                          local function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                           end
+                      
+                           local function GetPet()
+                              local ReturnTable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                          table.insert(ReturnTable, v.Name)
+                                      end
+                                  end
+                              return ReturnTable
+                           end
+          
+          
+                          local function GetCoins(chest)
+                              local ReturnTable = {}
+                              local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                              for i,v in pairs(ListCoins) do
+                                  for i2, v2 in pairs(check["chests"].Value) do
+                                          if v.n == v2 then
+                                          local Coin = v
+                                          Coin["index"] = i
+                                          table.insert(ReturnTable, Coin)
+                                      end
+                                  end
+                              end
+                              return ReturnTable
+                          end
+          
+                          local PetThiny = GetPet()
+                          local Cointhiny = GetCoins()
+          
+                          for i = 1, #Cointhiny do
+                              coroutine.wrap(function()
+                                FarmCoin(Cointhiny[i].index, PetThiny[1])
+                                FarmCoin(Cointhiny[i].index, PetThiny[2])
+                                FarmCoin(Cointhiny[i].index, PetThiny[3])
+                                FarmCoin(Cointhiny[i].index, PetThiny[4])
+                                FarmCoin(Cointhiny[i].index, PetThiny[5])
+                                FarmCoin(Cointhiny[i].index, PetThiny[6])
+                                FarmCoin(Cointhiny[i].index, PetThiny[7])
+                                FarmCoin(Cointhiny[i].index, PetThiny[8])
+                                FarmCoin(Cointhiny[i].index, PetThiny[9])
+                                FarmCoin(Cointhiny[i].index, PetThiny[10])
+                                FarmCoin(Cointhiny[i].index, PetThiny[11])
+                                FarmCoin(Cointhiny[i].index, PetThiny[12])
+                                FarmCoin(Cointhiny[i].index, PetThiny[13])
+                                FarmCoin(Cointhiny[i].index, PetThiny[14])
+                                FarmCoin(Cointhiny[i].index, PetThiny[15])
+                                FarmCoin(Cointhiny[i].index, PetThiny[16])
+                                FarmCoin(Cointhiny[i].index, PetThiny[17])
+                                FarmCoin(Cointhiny[i].index, PetThiny[18])
+                                FarmCoin(Cointhiny[i].index, PetThiny[19])
+                                FarmCoin(Cointhiny[i].index, PetThiny[20])
+                                FarmCoin(Cointhiny[i].index, PetThiny[21])
+                                FarmCoin(Cointhiny[i].index, PetThiny[22])
+                              end)()
+                          end
+                      end
+                  end
+              else
+                  for i2, v2 in pairs(check["chests"].Value) do
+                  if v2 == 'All' then
+                      local function FarmCoin(CoinID, PetID)
+                          game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                          game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                       end
+                  
+                       local function GetPet()
+                          local ReturnTable = {}
+                              for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                  if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                      table.insert(ReturnTable, v.Name)
+                                  end
+                              end
+                          return ReturnTable
+                       end
+      
+                      local function GetCoins(chest)
+                          local ReturnTable = {}
+                          local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                          for i,v in pairs(ListCoins) do
+                              if v.n == 'Volcano Magma Chest' or
+                              v.n == "Ancient Island Enchanted Chest" or
+                              v.n == "Hell Island Hell Chest" or
+                              v.n == "Haunted Island Haunted Chest" or
+                              v.n == "Heaven Island Angel Chest" or
+                              v.n == "Heavens Gate Grand Heaven Chest" or
+                              v.n == "Giant Tech Chest" or
+                              v.n == "Giant Steampunk Chest" or
+                              v.n == "Giant Alien Chest" or
+                              v.n == "Giant Ocean Chest" or
+                              v.n == "Giant Present"
+                              then
+                                  local Coin = v
+                                  Coin["index"] = i
+                                  table.insert(ReturnTable, Coin)
+                              end
+                          end
+                          return ReturnTable
+                      end
+      
+                      local PetThiny = GetPet()
+                      local Cointhiny = GetCoins()
+      
+                      for i = 1, #Cointhiny do
+                        FarmCoin(Cointhiny[i].index, PetThiny[1])
+                        FarmCoin(Cointhiny[i].index, PetThiny[2])
+                        FarmCoin(Cointhiny[i].index, PetThiny[3])
+                        FarmCoin(Cointhiny[i].index, PetThiny[4])
+                        FarmCoin(Cointhiny[i].index, PetThiny[5])
+                        FarmCoin(Cointhiny[i].index, PetThiny[6])
+                        FarmCoin(Cointhiny[i].index, PetThiny[7])
+                        FarmCoin(Cointhiny[i].index, PetThiny[8])
+                        FarmCoin(Cointhiny[i].index, PetThiny[9])
+                        FarmCoin(Cointhiny[i].index, PetThiny[10])
+                        FarmCoin(Cointhiny[i].index, PetThiny[11])
+                        FarmCoin(Cointhiny[i].index, PetThiny[12])
+                        FarmCoin(Cointhiny[i].index, PetThiny[13])
+                        FarmCoin(Cointhiny[i].index, PetThiny[14])
+                        FarmCoin(Cointhiny[i].index, PetThiny[15])
+                        FarmCoin(Cointhiny[i].index, PetThiny[16])
+                        FarmCoin(Cointhiny[i].index, PetThiny[17])
+                        FarmCoin(Cointhiny[i].index, PetThiny[18])
+                        FarmCoin(Cointhiny[i].index, PetThiny[19])
+                        FarmCoin(Cointhiny[i].index, PetThiny[20])
+                        FarmCoin(Cointhiny[i].index, PetThiny[21])
+                        FarmCoin(Cointhiny[i].index, PetThiny[22])
+                      end
+                  else
+                      local function FarmCoin(CoinID, PetID)
+                          game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                          game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                       end
+                  
+                       local function GetPet()
+                          local ReturnTable = {}
+                              for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                  if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                      table.insert(ReturnTable, v.Name)
+                                  end
+                              end
+                          return ReturnTable
+                       end
+      
+      
+                      local function GetCoins(chest)
+                          local ReturnTable = {}
+                          local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                          for i,v in pairs(ListCoins) do
+                          for i2, v2 in pairs(check["chests"].Value) do
+                              if v.n == v2 then
+                                  local Coin = v
+                                  Coin["index"] = i
+                                  table.insert(ReturnTable, Coin)
+                              end
+                          end
+                          end
+                          return ReturnTable
+                      end
+      
+                      local PetThiny = GetPet()
+                      local Cointhiny = GetCoins()
+      
+                      for i = 1, #Cointhiny do
+                        FarmCoin(Cointhiny[i].index, PetThiny[1])
+                        FarmCoin(Cointhiny[i].index, PetThiny[2])
+                        FarmCoin(Cointhiny[i].index, PetThiny[3])
+                        FarmCoin(Cointhiny[i].index, PetThiny[4])
+                        FarmCoin(Cointhiny[i].index, PetThiny[5])
+                        FarmCoin(Cointhiny[i].index, PetThiny[6])
+                        FarmCoin(Cointhiny[i].index, PetThiny[7])
+                        FarmCoin(Cointhiny[i].index, PetThiny[8])
+                        FarmCoin(Cointhiny[i].index, PetThiny[9])
+                        FarmCoin(Cointhiny[i].index, PetThiny[10])
+                        FarmCoin(Cointhiny[i].index, PetThiny[11])
+                        FarmCoin(Cointhiny[i].index, PetThiny[12])
+                        FarmCoin(Cointhiny[i].index, PetThiny[13])
+                        FarmCoin(Cointhiny[i].index, PetThiny[14])
+                        FarmCoin(Cointhiny[i].index, PetThiny[15])
+                        FarmCoin(Cointhiny[i].index, PetThiny[16])
+                        FarmCoin(Cointhiny[i].index, PetThiny[17])
+                        FarmCoin(Cointhiny[i].index, PetThiny[18])
+                        FarmCoin(Cointhiny[i].index, PetThiny[19])
+                        FarmCoin(Cointhiny[i].index, PetThiny[20])
+                        FarmCoin(Cointhiny[i].index, PetThiny[21])
+                        FarmCoin(Cointhiny[i].index, PetThiny[22])
+                      end
+                  end
+                  end
+              end
+              end)
+          end
+      end
+  end)
+  
+  
+  spawn(function()
+  while task.wait(FarmingSpeed) do
+      if SettingsTable.GemFarm then 
+      function getGemid()
+          for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetDescendants()) do
+              if v:IsA"MeshPart" then
+                  if v.MeshId == 'rbxassetid://7041620873' or v.MeshId == 'rbxassetid://7041621431' or v.MeshId == 'rbxassetid://7041621329' or v.MeshId == 'rbxassetid://7041620873' then
+                      a = v.Parent.Name
+                  end
+              end
+          end
+          return a
+      end
+  
+          
+               function GetThePets2()
+                  local returntable = {}
+                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                      if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                          table.insert(returntable, v.Name)
+                      end
+                  end
+                  return returntable
+               end
+               
+               local GetMyPets = GetThePets2()
+               
+                   function FarmCoin65(CoinID, PetID)
+                  game.workspace["__THINGS"]["__REMOTES"]["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                  game.workspace["__THINGS"]["__REMOTES"]["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                   end
+          
+          
+          
+          for i,v in pairs(GetMyPets) do
+            pcall(function()
+                FarmCoin65(getGemid(), v)
+            end)
+             end
+          end
+      end
+      end)
+  
+  
+      spawn(function()
+          while task.wait(.6) do
+              if FarmCoinHealth then
+                  pcall(function()
+                      function FarmCoin(CoinID, PetID)
+                          game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                          game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})                
+                      end
+      
+                      function GetPet()
+                          local Returntable = {}
+                              for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                  if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                      table.insert(Returntable, v.Name)
+                                  end
+                              end
+                          return Returntable
+                      end
+      
+                      local NearestCoin = tonumber(SelDistacne)
+                      function GetCoins()
+                          local Returntable = {}
+                          local Areas = (areaTable)
+                          local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+                          for i,v in pairs(ListCoins) do
+                              if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude < NearestCoin or v.h >= SelHealth then
+                                  local Coin = v
+                                  Coin["index"] = i
+                                  table.insert(Returntable, Coin)
+                                  NearestCoin = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude
+                              end
+                          end
+                          return Returntable
+                      end
+      
+                      local petthingy = GetPet()
+      
+                      local cointhiny = GetCoins()
+      
+                      for i = 1, #cointhiny do
+                          coroutine.wrap(function()
+                              FarmCoin(cointhiny[i].index, petthingy[i%#petthingy+1])
+                          end)()
+                      end
+  
+      end)
+      end
+      end
+      end)
+  
+      --FarmSelectedCoin
+  --SelectedArea
+  spawn(function()
+      while task.wait(FarmingSpeed) do
+          if FarmSelectedCoin then
+              pcall(function()
+                  for i4, v4 in pairs(check["SelArea"].Value) do
+                      if v4 == "All" then
+                          local function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                           end
+                      
+                           local function GetPet()
+                              local ReturnTable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                          table.insert(ReturnTable, v.Name)
+                                      end
+                                  end
+                              return ReturnTable
+                           end
+          
+                          local function GetCoins(area)
+                              local ReturnTable = {}
+                              local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                              for i,v in pairs(ListCoins) do
+                                for i2, v2 in pairs(check["hope"].Value) do
+                                  if v.n == "Town".. " ".. v2 or
+                                  v.n == "Forest".. " ".. v2 or
+                                  v.n == "Beach".. " ".. v2 or
+                                  v.n == "Mine".. " ".. v2 or
+                                  v.n == "Winter".. " ".. v2 or
+                                  v.n == "Glacier".. " ".. v2 or
+                                  v.n == "Desert".. " ".. v2 or
+                                  v.n == "Volcano".. " ".. v2 or
+                                  v.n == "Enchanted Forest".. " ".. v2 or
+                                  v.n == "Ancient Island".. " ".. v2 or
+                                  v.n == "Samurai Island".. " ".. v2 or
+                                  v.n == "Candy Island".. " ".. v2 or
+                                  v.n == "Haunted Island".. " ".. v2 or
+                                  v.n == "Hell Island".. " ".. v2 or
+                                  v.n == "Heaven Island".. " ".. v2 or
+                                  v.n == "Ice Tech".. " ".. v2 or
+                                  v.n == "Tech City".. " ".. v2 or
+                                  v.n == "Dark Tech".. " ".. v2 or
+                                  v.n == "Steampunk".. " ".. v2 or
+                                  v.n == "Alien Lab".. " ".. v2 or
+                                  v.n == "Alien Forest".. " ".. v2 or
+                                  v.n == "Glitch".. " ".. v2 or
+                                  v.n == "Hacker Portal".. " ".. v2 or
+                                  v.n == "Axolotl Ocean".. " ".. v2 or
+                                  v.n == "Axolotl Deep Ocean".. " ".. v2 or
+                                  v.n == "Axolotl Cave".. " ".. v2
+                                   then
+                                      local Coin = v
+                                      Coin["index"] = i
+                                      table.insert(ReturnTable, Coin)
+                                end
+                                end
+                              end
+                              return ReturnTable
+                          end
+          
+                          local PetThiny = GetPet()
+                          local Cointhiny = GetCoins()
+          
+                          for i = 1, #Cointhiny do
+                            coroutine.wrap(function()
+                              FarmCoin(Cointhiny[i].index, PetThiny[i%#PetThiny+1])
+                            end)()
+                          end
+  
+                      else
+  
+                          local function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                           end
+                      
+                           local function GetPet()
+                              local ReturnTable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                          table.insert(ReturnTable, v.Name)
+                                      end
+                                  end
+                              return ReturnTable
+                           end
+          
+                          local function GetCoins(area)
+                              local ReturnTable = {}
+                              local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                              for i,v in pairs(ListCoins) do
+                                for i2, v2 in pairs(check["hope"].Value) do
+                                    for i3, v3 in pairs(check["SelArea"].Value) do
+                                  if v.n == v3.. " ".. v2 then
+                                      local Coin = v
+                                      Coin["index"] = i
+                                      table.insert(ReturnTable, Coin)
+                                  end
+                                end
+                                end
+                              end
+                              return ReturnTable
+                          end
+          
+                          local PetThiny = GetPet()
+                          local Cointhiny = GetCoins()
+          
+                          for i = 1, #Cointhiny do
+                            coroutine.wrap(function()
+                              FarmCoin(Cointhiny[i].index, PetThiny[i%#PetThiny+1])
+                            end)()
+                          end
+                      end
+                  end
+  
+  end)
+  end
+  end
+  end)
+       
+  spawn(function()
+      while task.wait(FarmingSpeed) do
+          if SettingsTable.AreaFarm then
+              pcall(function()
+  
+                          for i, v in pairs(check["SelArea"].Value) do
+                              getgenv().Area = v
+                          end
+  
+                          function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                              game:GetService("ReplicatedStorage").Framework.Modules["2 | Network"]["update coin pets"]:Fire(CoinID, {[1] = PetID})
+                          end
+                                   
+                              function GetMyPets()
+                              local returntable = {}
+                              for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                  if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                                      table.insert(returntable, v.Name)
+                                  end
+                              end
+                              return returntable
+                              end
+                      
+                      function GetCoins()
+                      local returntable = {}
+                      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+                      for i,v in pairs(ListCoins) do
+                          if Area == "All" or string.find(string.lower(v.a), string.lower(Area)) then
+                              table.insert(returntable, i)
+                          end
+                      end
+                      return returntable
+                      end
+                      
+                          local cointhiny = GetCoins()
+                          local getpet = GetMyPets()
+                          for i = 1, #cointhiny do
+                              pcall(function() FarmCoin(cointhiny[i], getpet[i%#getpet+1]) end)
+                          end
+  
+                          --[[
+                          local function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                           end
+                      
+                           local function GetPet()
+                              local ReturnTable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                          table.insert(ReturnTable, v.Name)
+                                      end
+                                  end
+                              return ReturnTable
+                           end
+          
+          
+                          local function GetCoins()
+                              local ReturnTable = {}
+                              local AreaTable = (areaTable)
+                              local ListCoins = workspace.__THINGS.__REMOTES["get coins"]:InvokeServer({})[1]
+                              for i,v in pairs(ListCoins) do
+                                  for i2, v2 in pairs(check["SelArea"].Value) do
+                                  if v2 == "All" or v.a == v2 then
+                                      local Coin = v
+                                      Coin["index"] = i
+                                      table.insert(ReturnTable, Coin)
+                                  end
+                              end
+                              end
+                              return ReturnTable
+                          end
+          
+                          local PetThiny = GetPet()
+                          local Cointhiny = GetCoins()
+          
+                          for i = 1, #Cointhiny do
+                              FarmCoin(Cointhiny[i].index, PetThiny[i%#PetThiny+1])
+                          end]]
+              end)
+          end
+      end
+  end)
+  
+  
+  
+  
+  
+  spawn(function()
+      while task.wait(FarmingSpeed) do
+          if UltraAreaFarm then
+              pcall(function()
+                      
+                      for i, v in pairs(check["SelArea"].Value) do
+                          getgenv().Area = v
+                      end
+          
+                      function FarmCoin(CoinID, PetID)
+                          game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                          game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                      end
+                               
+                          function GetMyPets()
+                          local returntable = {}
+                          for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                              if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                                  table.insert(returntable, v.Name)
+                              end
+                          end
+                          return returntable
+                          end
+                  
+                  function GetCoins()
+                  local returntable = {}
+                  local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+                  for i,v in pairs(ListCoins) do
+                      if Area == "All" or string.find(string.lower(v.a), string.lower(Area)) then
+                          table.insert(returntable, i)
+                      end
+                  end
+                  return returntable
+                  end
+                  
+                      local cointhiny = GetCoins()
+                      local getpet = GetMyPets()
+                      for i = 1, #cointhiny do
+                          coroutine.wrap(function()
+                          pcall(function() FarmCoin(cointhiny[i], getpet[i%#getpet+1]) end)
+                          end)()
+                      end
+              end)
+          end
+      end
+  end)
+  
+                              function GetThePets540()
+                                  local returntable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                                          table.insert(returntable, v.Name)
+                                      end
+                                  end
+                                  return returntable
+                               end
+                          
+                              
+                              function FarmCoin2(CoinID, PetID)
+                                  game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                                  game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                               end
+                          
+                              local pethingy2 = GetThePets540()
+  
+  spawn(function()
+      while task.wait(FarmingSpeed) do
+      if SettingsTable.FarmNearest then
+          pcall(function()
+  
+              local nearest
+              local NearestOne = tonumber(SelDistacne) or 307
+              for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetChildren()) do
+                       if (v.POS.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < NearestOne then
+                           nearest = v
+                           NearestOne = (v.POS.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+           end
+       end
+  
+      local Cointhiny2 = nearest.Name
+      for i = 1, #Cointhiny2 do
+          coroutine.wrap(function()
+         FarmCoin2(Cointhiny2, pethingy2[i%#pethingy2+1])
+  
+      end)()
+  end
+      end)
+          end
+      end
+  end)
+  
+  spawn(function()
+      while game:GetService("RunService").Heartbeat:wait(FarmingSpeed) do
+          if SettingsTable.MultiTarget then
+              pcall(function()
+  
+                  function FarmCoin(CoinID, PetID)
+                      game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                      game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})                
+                  end
+  
+                  function GetPet()
+                      local Returntable = {}
+                          for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                              if v.ClassName == "TextButton" and v.Equipped.Visible then
+                                  table.insert(Returntable, v.Name)
+                              end
+                          end
+                      return Returntable
+                  end
+  
+                  local NearestCoin = tonumber(SelDistacne) or 307
+                  function GetCoins()
+                      local Returntable = {}
+                      local Areas = (areaTable)
+                      local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+                      for i,v in pairs(ListCoins) do
+                          if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude < NearestCoin then
+                              local Coin = v
+                              Coin["index"] = i
+                              table.insert(Returntable, Coin)
+                              NearestCoin = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude
+                          end
+                      end
+                      return Returntable
+                  end
+  
+                  local petthingy = GetPet()
+  
+                  local cointhiny = GetCoins()
+  
+                  for i = 1, #cointhiny do
+                      coroutine.wrap(function()
+                          FarmCoin(cointhiny[i].index, petthingy[i%#petthingy+1])
+                      end)()
+                  end
+              end)
+          end
+      end
+     end)
+  local TabFF = win:Tab("Fast Farm")
+  TabFF:Toggle("Fast Farm", function(t)
+      if t then
+          getgenv().PromptGuioof:AddText("Fast Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      else
+          getgenv().PromptGuioof:AddText("Fast Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      end
+      fastoption = t
+end)
+
+  TabFF:Toggle("Fast AutoCollect Coins", function(t)
+      if t then
+          getgenv().PromptGuioof:AddText("Fast Farm = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      else
+          getgenv().PromptGuioof:AddText("Fast Farm = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      end
+      fastoption = t
+end)
+      if t then
+          getgenv().PromptGuioof:AddText("AutoCollect Coins = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      else
+          getgenv().PromptGuioof:AddText("AutoCollect Coins = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+      end
+      SettingsTable.FastColect = t
+      while SettingsTable.FastColect do task.wait()
+      pcall(function()
+          local ohTable1 = {[1] = {}}
+          for i,v in pairs(game.workspace['__THINGS'].Orbs:GetChildren()) do
+              ohTable1[1][i] = v.Name
+          end
+          game.workspace['__THINGS']['__REMOTES']["claim orbs"]:FireServer(ohTable1)
+  
+      end)
+  end
+
+  TabBuy:Toggle("Auto Redeam Rank Rewards", function(t)
+                  if t then
+                  getgenv().PromptGuioof:AddText("Redeam Rank Rewards = true", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+              else
+                  getgenv().PromptGuioof:AddText("Redeam Rank Rewards = false", Enum.Font.Code, Color3.fromRGB(200, 200, 200))
+              end
+         SettingsTable.RankRew = t
+                         while wait(.3) do
+                             if SettingsTable.RankRew then
+     
+                              workspace.__THINGS.__REMOTES["redeem rank rewards"]:InvokeServer({})
+  end
+     end
+end)
+
+
+
+
+TabFF:Button("FPS BOOST", function()
+             
+             local decalsyeeted = true
+         local g = game
+         local w = g.Workspace
+         local l = g.Lighting
+         local t = w.Terrain
+         t.WaterWaveSize = 0
+         t.WaterWaveSpeed = 0
+         t.WaterReflectance = 0
+         t.WaterTransparency = 0
+         l.GlobalShadows = false
+         l.FogEnd = 9e9
+         l.Brightness = 0
+         settings().Rendering.QualityLevel = "Level01"
+         for i, v in pairs(g:GetDescendants()) do
+             if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+                 v.Material = "Plastic"
+                 v.Reflectance = 0
+             elseif v:IsA("Decal") or v:IsA("Texture") and decalsyeeted then
+                 v.Transparency = 1
+             elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+                 v.Lifetime = NumberRange.new(0)
+             elseif v:IsA("Explosion") then
+                 v.BlastPressure = 1
+                 v.BlastRadius = 1
+             elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
+                 v.Enabled = false
+             elseif v:IsA("MeshPart") then
+                 v.Material = "Plastic"
+                 v.Reflectance = 0
+                 v.TextureID = 10385902758728957
+             end
+         end
+         for i, e in pairs(l:GetChildren()) do
+             if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
+                 e.Enabled = false
+             end
+         end
+end)
+
+
+local TabFun = win:Tab("Fun")
+
+TabFun:Button("Make All Pets Huge Santa", function()
     for i,v in pairs(game:GetService("Workspace")["__THINGS"].Pets:GetChildren()) do
         v.Mesh.MeshId = "rbxassetid://8211668957"
         v.Mesh.TextureId = "rbxassetid://8211668593"
         v.Mesh.Scale = Vector3.new(5, 5, 5)
     end
-end})
+end)
 
-F.Button({ Text = "Visual Gem Dupe", Callback = function()
+TabFun:Button("Visual Gem Dupe", function()
     function comma_value(amount)
         local formatted = amount
        while true do  
@@ -335,558 +1559,188 @@ F.Button({ Text = "Visual Gem Dupe", Callback = function()
       local new = comma_value(newNumber)
       local newString = tostring(new)
       diamonds.Text = newString
-end})
+end)
+local TabUi = win:Tab("Ui's")
 
-
-F.Dropdown({Text = "Select Pet", Options = firsteggtable, Callback = function(petname)
-    PetNamehere = petname
-end,
-})
-
-F.Button({ Text = "Hatch Pet", Callback = function()
-    function HatchEgg(Pet)
-        local pet = Pet
-        for i,v in pairs(game.ReplicatedStorage.Game.Pets:GetChildren()) do
-            if string.split(tostring(v), ' - ')[2] == pet then
-                pet = string.split(tostring(v), ' - ')[1]
-            end
-        end
-        local tbl = {
-            {
-            nk = 'Preston',
-            idt = '69',
-            e = false,
-            uid = '69',
-            s = 999999999999,
-            id = pet,
-        }}
-        local egg
-        for i_,script in pairs(game.ReplicatedStorage.Game.Eggs:GetDescendants()) do
-            if script:IsA('ModuleScript') then
-                if typeof(require(script).drops) == 'table' then
-                    for i,v in pairs(require(script).drops) do
-                        if v[1] == pet then
-                            egg = require(script).displayName
-                        end
-                    end
-                end
-            end
-        end
-        if Pet == 'Huge Cat' then egg = 'Cracked Egg' end
-        for i,v in pairs(getgc(true)) do
-            if (typeof(v) == 'table' and rawget(v, 'OpenEgg')) then
-                v.OpenEgg(egg, tbl)
-            end
-        end
-     end
-     HatchEgg(PetNamehere)
-end})
-
---Teleports
-T.Dropdown({Text = "World Teleports", Callback = function(value)
-if value == "Trading Plaza" then
-    if game.PlaceId ~= 7722306047 then
-        game:GetService("TeleportService"):Teleport(7722306047, game.Players.LocalPlayer)
-    else
-      spawn(function()
-          pcall(function()
-            CoreGui:SetCore("SendNotification", {Title = "Project Sinister", Text = "Ur Already In Trading Plaza", Duration = 35, Button1 = "Ok"})
-            end)
-        end)
-    end
-elseif value == "Pet Sim World" then
-    if game.PlaceId ~= 6284583030 then
-        game:GetService("TeleportService"):Teleport(6284583030, game.Players.LocalPlayer)
-    else
-        CoreGui:SetCore("SendNotification", {Title = "Project Sinister", Text = "Ur Already In Pet Sim World", Duration = 35, Button1 = "Ok"})
-    end
-elseif value == "Pet Sim Hardcore" then
-    if game.PlaceId ~= 10321372166 then
-        game:GetService("TeleportService"):Teleport(10321372166, game.Players.LocalPlayer)
-    else
-        CoreGui:SetCore("SendNotification", {Title = "Project Sinister", Text = "Ur Already In Pet Sim Hardcore", Duration = 35, Button1 = "Ok"})
-    end
-    end
-end,
-	
-Options = {
-	"Trading Plaza",
-	"Pet Sim World",
-	"Pet Sim Hardcore",
-}
-})
-
---Ui Stuff
-
-U.Button({ Text = "Bank", Callback = function()
+TabUi:Button("Bank", function()
     game:GetService("Players").LocalPlayer.PlayerGui.Bank.Enabled = true
-end})
-
-U.Button({ Text = "Gold Pet Machine", Callback = function()
+end)
+TabUi:Button("Gold Pet Machine", function()
     game:GetService("Players").LocalPlayer.PlayerGui.Golden.Enabled = true
-end})
-
-U.Button({ Text = "Rainbow Pet Machine", Callback = function()
-    game:GetService("Players").LocalPlayer.PlayerGui.Rainbow.Enabled = true
-end})
-
-U.Button({ Text = "Fuse Pets", Callback = function()
-    game:GetService("Players").LocalPlayer.PlayerGui.FusePets.Enabled = true
-end})
-
-U.Button({ Text = "Dark Matter Pet Machine", Callback = function()
+end)
+TabUi:Button("Rainbow Pet Machine", function()
+ game:GetService("Players").LocalPlayer.PlayerGui.Rainbow.Enabled = true
+end)
+TabUi:Button("Fuse Pets", function()
+  game:GetService("Players").LocalPlayer.PlayerGui.FusePets.Enabled = true
+end)
+TabUi:Button("Dark Matter Pet Machine", function()
     game:GetService("Players").LocalPlayer.PlayerGui.DarkMatter.Enabled = true
-end})
-
-U.Button({ Text = "Teleport", Callback = function()
+end)
+TabUi:Button("Teleport", function()
     game:GetService("Players").LocalPlayer.PlayerGui.Teleport.Enabled = true
-end})
-
-
---Credits
-C.Button({ Text = "Scripter | Doku & Brinen ", Callback = function()
-setclipboard("Doku#3123")
-end})
-
-C.Button({ Text = "Discord | https://discord.gg/DaKyeHFx8d", Callback = function()
-setclipboard("https://discord.gg/DaKyeHFx8d")
-	syn.request(
-		{
-			Url = "http://127.0.0.1:6463/rpc?v=1",
-			Method = "POST",
-			Headers = {
-				["Content-Type"] = "application/json",
-				["origin"] = "https://discord.com",
-			},
-			Body = game:GetService("HttpService"):JSONEncode(
-				{
-					["args"] = {
-						["code"] = "DaKyeHFx8d",
-					},
-					["cmd"] = "INVITE_BROWSER",
-					["nonce"] = game:GetService("HttpService"):GenerateGUID(false)
-				})
-		})
-end})
-
-spawn(function()
-    game.Players.PlayerAdded:Connect(function(newPlayer)
-        if newPlayer:IsInGroup(5060810) and getgenv().antiMod then                    
-           game.Players.LocalPlayer:Kick("\n Big Games Staff Joined \n!")
-        end
-     end)
- end)
-
- getgenv().ListOFRaritys = {
-   ['Basic'] = true,
-   ['Rare'] = true,
-   ['Epic'] = true,
-   ['Legendary'] = true,
-   ['Mythical'] = true,
-   ['Exclusive'] = true,
-}
+end)
 
 
 
 
-    repeat wait() until game:GetService("Players")
-    repeat wait() until game:GetService("Players").LocalPlayer
-    repeat wait() until game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Loading"):WaitForChild("Black").BackgroundTransparency == 1
-    repeat wait() until game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
 
 
-    local ID = {}
-    local PetRarity = {}
-    for i,v in pairs(Library.Directory.Pets) do
-     ID[i] = v.name
-     PetRarity[i] = v.rarity
-    end
-    
-    function ThumbNail(id, type)
-     local nailname = (type == 'Normal' or type == 'Rainbow' and 'thumbnail') or (type == 'Gold' and 'goldenThumbnail') or (type == 'Dark Matter' and 'darkMatterThumbnail')
-     local eeee = Library.Directory.Pets[tostring(id)][nailname] or Library.Directory.Pets[tostring(id)]["thumbnail"] 
-     local AssetID = eeee:gsub("rbxassetid%:%/%/", "")
-     local Link = "https://www.roblox.com/item-thumbnails?params=[{assetId:"..AssetID.."}]"
-	 local Response = game:GetService("HttpService"):JSONDecode(game:HttpGet(Link))
-     return Response[1].thumbnailUrl
-    end
-    
-    function Send(Name, Nickname, Strength, Rarity, Thumbnail, Formation, Color, NewPowers, nth)
-        local Webhook = getgenv().Webhook
-        local msg = {
-            ["username"] = "Project Sinister",
-            ["Icon"] = "https://media.discordapp.net/attachments/993598696774189058/1016185794454618142/unknown.png",
-            ["embeds"] = {
-                {
-                    ["color"] = tonumber(tostring("0x" .. Color)),
-                    ["title"] = "*" .. Rarity .. "* " .. Name,
-                    ["thumbnail"] = {
-                        ["url"] = Thumbnail
-                    },
-                    ["fields"] = {
-                        {
-                            ["name"] = "Nickname",
-                            ["value"] = Nickname,
-                            ["inline"] = true
-                        },
-                        {
-                            ["name"] = "Formation",
-                            ["value"] = Formation,
-                            ["inline"] = true
-                        },
-                        {
-                            ["name"] = "Strength",
-                            ["value"] = Strength,
-                            ["inline"] = true
-                        },
-                    },
-                    ["author"] = {},
-                    ['timestamp'] = os.date("%Y-%m-%dT%X.000Z"),
-                }
-            }
-        }
-        for qq,bb in pairs(NewPowers) do
-            local thingy = {
-                ["name"] = "Enchantment "..tostring(qq),
-                ["value"] = bb,
-                ["inline"] = true
-            }
-            table.insert(msg["embeds"][1]["fields"], thingy)
-        end
-        request = http_request or request or HttpPost or syn.request
-        request({Url = Webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = game.HttpService:JSONEncode(msg)})
-    end
-    
-    function SendPetToWebhook(uid)
-    for i,v in pairs(Library.Save.Get().Pets) do
-         if v.uid == uid and getgenv().ListOFRaritys[PetRarity[v.id]] then
-             local ThingyThingyTempTypeThing = (v.g and 'Gold') or (v.r and 'Rainbow') or (v.dm and 'Dark Matter') or 'Normal'
-             local Formation = (v.g and ':crown: Gold') or (v.r and ':rainbow: Rainbow') or (v.dm and ':milky_way: Dark Matter') or ':roll_of_paper: Normal'
-             local Thumbnail = ThumbNail(v.id, ThingyThingyTempTypeThing)
-             local Name = ID[v.id]
-             local Nickname = v.nk
-             local nth = v.idt
-             local Strength = v.s
-             local Powers = v.powers or {}
-             local Rarity = PetRarity[v.id]
-             local Color = (Rarity == 'Exclusive' and "e676ff") or (Rarity == 'Mythical' and "ff8c00") or (Rarity == 'Legendary' and "ff45f6") or (Rarity == 'Epic' and "ffea47") or (Rarity == 'Rare' and "42ff5e") or (Rarity == 'Basic' and "b0b0b0")
-             local NewPowers = {}
-             for a,b in pairs(Powers) do
-                 local eeeeeeee = tostring(b[1] .. " " .. b[2])
-                 table.insert(NewPowers, eeeeeeee)
-             end
-             Send(Name, Nickname, Library.Functions.Commas(Strength), Rarity, Thumbnail, Formation, Color, NewPowers, nth)
-         end
-     end
-    end
-    
-    if getgenv().Connection then getgenv().Connection:Disconnect() end
-    getgenv().Connection = game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets.ChildAdded:Connect(function(child)
-        if StartWebhookTracking then
-        SendPetToWebhook(child.Name)
-        end
-    end)
 
 
-    spawn(function()
-        while task.wait(.7) do
-            if game:GetService("Workspace")["__THINGS"].Orbs:FindFirstChildOfClass("Part") and (getgenv().FarmNearest) then
-                local TweenService = game:GetService("TweenService")
 
-                for i,v in pairs(game:GetService("Workspace")["__THINGS"].Orbs:GetChildren()) do
-                    if v:IsA("Part") and v:FindFirstChild("Orb") then
-                        v.Orb.Sunray:Destroy()
-                        TweenService:Create(
-                            v,
-                            TweenInfo.new(.3, Enum.EasingStyle.Linear),
-                            {CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame}
-                        ):Play()
-                    end
-                end
-            end
-        end
-    end)
 
-  spawn(function()
-      while game:GetService("RunService").Heartbeat:wait() do
-          if getgenv().FarmNearest then
-              pcall(function()
-  
-                  function FarmCoins(CoinID, PetID)
-                      game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
-                      game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})                
-                  end
-  
-                  function FindPets()
-                      local Returntable = {}
-                          for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
-                              if v.ClassName == "TextButton" and v.Equipped.Visible then
-                                  table.insert(Returntable, v.Name)
-                              end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local TabMisc = win:Tab("Misc")
+TabMisc:Button("Rejoin", function()
+          local ts = game:GetService("TeleportService")
+          local p = game:GetService("Players").LocalPlayer
+          ts:Teleport(game.PlaceId, p)
+end)
+TabMisc:Slider("Walk Speed", 16, 500, 50, function(Value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+end)
+TabMisc:Button("Destroy", function()
+    game.CoreGui.MangoHub:Destroy();
+end)
+local TabCredit = win:Tab("Credits")
+TabCredit:Label("Hub by Argetnar & Doku & Brinen")
+local LabelRef = TabCredit:Label("v1")
+wait(10)
+LabelRef:Refresh("v2")
+
+
+      for i,imaegg in pairs(game:GetService("ReplicatedStorage").Game.Coins:GetChildren()) do 
+          for nu,hwe in pairs(imaegg:GetChildren()) do
+              OldFarm:Toggle(hwe.Name, false, function(t)
+                  StartOldFarm = t
+                  while StartOldFarm do task.wait()
+                      if send_All_Pets then
+                          function FarmCoin(CoinID, PetID)
+                              game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                              game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
                           end
-                      return Returntable
-                  end
-  
-                  local Closestcoin = tonumber(425)
-                  function BringCoins()
-                      local Returntable = {}
-                
+                                   
+                              function GetMyPets()
+                              local returntable = {}
+                              for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                  if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                                      table.insert(returntable, v.Name)
+                                  end
+                              end
+                              return returntable
+                              end
+                              
+                      function GetCoins()
+                      local returntable = {}
                       local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
                       for i,v in pairs(ListCoins) do
-                          if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude < Closestcoin then
-                              local Coin = v
-                              Coin["index"] = i
-                              table.insert(Returntable, Coin)
-                              Closestcoin = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.p).Magnitude
+                          if string.find(string.lower(v.a), string.lower(hwe.Name)) then
+                              table.insert(returntable, i)
                           end
                       end
-                      return Returntable
-                  end
-  
-                  local petthingy = FindPets()
-  
-                  local cointhiny = BringCoins()
-  
-                  for i = 1, #cointhiny do
-                      coroutine.wrap(function()
-                          FarmCoins(cointhiny[i].index, petthingy[i%#petthingy+1])
-                      end)()
+                      return returntable
+                      end
+                      
+                          local cointhiny = GetCoins()
+                          local getpet = GetMyPets()
+                          for i = 1, #cointhiny do
+                              coroutine.wrap(function()
+                                  FarmCoin(cointhiny[i].index, getpet[1])
+                                  FarmCoin(cointhiny[i].index, getpet[2])
+                                  FarmCoin(cointhiny[i].index, getpet[3])
+                                  FarmCoin(cointhiny[i].index, getpet[4])
+                                  FarmCoin(cointhiny[i].index, getpet[5])
+                                  FarmCoin(cointhiny[i].index, getpet[6])
+                                  FarmCoin(cointhiny[i].index, getpet[7])
+                                  FarmCoin(cointhiny[i].index, getpet[8])
+                                  FarmCoin(cointhiny[i].index, getpet[9])
+                                  FarmCoin(cointhiny[i].index, getpet[10])
+                                  FarmCoin(cointhiny[i].index, getpet[11])
+                                  FarmCoin(cointhiny[i].index, getpet[12])
+                                  FarmCoin(cointhiny[i].index, getpet[13])
+                                  FarmCoin(cointhiny[i].index, getpet[14])
+                                  FarmCoin(cointhiny[i].index, getpet[15])
+                                  FarmCoin(cointhiny[i].index, getpet[16])
+                                  FarmCoin(cointhiny[i].index, getpet[17])
+                                  FarmCoin(cointhiny[i].index, getpet[18])
+                                  FarmCoin(cointhiny[i].index, getpet[19])
+                                  FarmCoin(cointhiny[i].index, getpet[20])
+                                  FarmCoin(cointhiny[i].index, getpet[21])
+                                  FarmCoin(cointhiny[i].index, getpet[22])
+                              end)()
+                          end
+                      else
+                          pcall(function()
+                              function FarmCoin(CoinID, PetID)
+                                  game.workspace['__THINGS']['__REMOTES']["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
+                                  game.workspace['__THINGS']['__REMOTES']["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
+                              end
+                                       
+                                  function GetMyPets()
+                                  local returntable = {}
+                                  for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
+                                      if v.ClassName == 'TextButton' and v.Equipped.Visible then
+                                          table.insert(returntable, v.Name)
+                                      end
+                                  end
+                                  return returntable
+                                  end
+                                  
+                          function GetCoins()
+                          local returntable = {}
+                          local ListCoins = game.workspace['__THINGS']['__REMOTES']["get coins"]:InvokeServer({})[1]
+                          for i,v in pairs(ListCoins) do
+                              if string.find(string.lower(v.a), string.lower(hwe.Name)) then
+                                  table.insert(returntable, i)
+                              end
+                          end
+                          return returntable
+                          end
+                          
+                              local cointhiny = GetCoins()
+                              local getpet = GetMyPets()
+                              for i = 1, #cointhiny do
+                                  coroutine.wrap(function()
+                                      pcall(function() FarmCoin(cointhiny[i], getpet[i%#getpet+1]) end)
+                                      task.wait(.3)
+                                  end)()
+                              end
+                          
+                          end)
+                      end
                   end
               end)
           end
       end
-     end)
-
-function GrabPlayersOets()
-    local returntable = {}
-    for i,v in pairs(game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Frame.Main.Pets:GetChildren()) do
-        if v.ClassName == 'TextButton' and v.Equipped.Visible then
-            table.insert(returntable, v.Name)
-        end
-    end
-    return returntable
- end
- 
- local FindPlayersPets = GrabPlayersOets()
-
-function FarmCoins4(CoinID, PetID)
-    game.workspace["__THINGS"]["__REMOTES"]["join coin"]:InvokeServer({[1] = CoinID, [2] = {[1] = PetID}})
-    game.workspace["__THINGS"]["__REMOTES"]["farm coin"]:FireServer({[1] = CoinID, [2] = PetID})
-end
 
 
-spawn(function()
-    while task.wait() do
-        if getgenv().FarmGems then 
-            for i,v in pairs(FindPlayersPets) do
-                pcall(function()
-                    FarmCoins4(FindGems(), v)
-                end)
-                 end
-        function FindGems()
-            for i,v in pairs(game:GetService("Workspace")["__THINGS"].Coins:GetDescendants()) do
-                if v:IsA"MeshPart" then
-                    if v.MeshId == 'rbxassetid://7041620873' or v.MeshId == 'rbxassetid://7041621431' or v.MeshId == 'rbxassetid://7041621329' or v.MeshId == 'rbxassetid://7041620873' then
-                        a = v.Parent.Name
-                    end
-                end
-            end
-            return a
-        end
-    end
-end
-end)
 
 
-timetosend = 15
 
-game.Players.PlayerAdded:Connect(function(plr)
-    local character = plr.Character or plr.CharacterAdded:Wait()
-        end)
-       
-        local webhookcheck =
-        is_sirhurt_closure and "s" or pebc_execute and "p" or syn and "s" or
-        secure_load and "s" or
-        KRNL_LOADED and "k" or
-        SONA_LOADED and "s" or
-        "e"
- 
-     local url = StatWebhook
- 
-     local data = {
-        ["content"] = "",
-             ["embeds"] = {{
-                 ["title"] = "__**Project Sinister Stat Tracker**__",
-                 ["description"] = "Blackouts Watching U...", 
-                 ["type"] = "rich",
-                 ["color"] = tonumber(0x0E980E),
-                },
-            }
-        
-    }
-local newdata = game:GetService("HttpService"):JSONEncode(data)
 
-local headers = {
-   ["content-type"] = "application/json"
-}
-request = http_request or request or HttpPost or syn.request
-local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
-request(abcdef)
-    
 
-        _G.Tracking = 'Fantasy Coins' 
-        _G.trackD = 'Diamonds'
-        _G.trackC = 'Coins'
-        _G.trackT = 'Tech Coins'
-       
 
-        local waitTime = timetosend
-        local currentTime = 0
-        local startc; local endc; local coin; local difc; local tablec = {};
-        local startd; local endd; local diamondc; local difd; local tabled = {};
-        local startfc; local endfc; local fantasyc; local diffc; local tablefc = {};
-        local startT; local endT; local tech; local dift; local tablet = {};
-        
-        
-        local function add(table)
-            local value = 0
-            for i, v in next, table do
-                value = value + v
-            end
-            return value
-        end
-        local function comma_Value(amount)
-            local formatted = amount
-            while true do
-                formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
-                if (k == 0) then
-                    break
-                end
-            end
-            return formatted
-        end
-        local username = game:GetService("Players").LocalPlayer.Name
-        local egg1 = 2970000000
-        local egg2 = 330000000
 
- 
-        
-        local function start()
-            startfc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.Tracking].Amount.Text, ",", "")
-            startd = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackD].Amount.Text, ",", "")
-            startc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackC].Amount.Text, ",", "")
-            startT = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackT].Amount.Text, ",", "")
-            
-        end
-        local function ending()
-            endfc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.Tracking].Amount.Text, ",", "")
-            endd = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackD].Amount.Text, ",", "")
-            endc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackC].Amount.Text, ",", "")
-            endT = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right[_G.trackT].Amount.Text, ",", "")
-             
-        end
-        local function initialvalue()
-            coin = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right.Coins.Amount.Text, ",", "")
-            diamondc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right.Diamonds.Amount.Text, ",", "")
-            fantasyc = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right["Fantasy Coins"].Amount.Text, ",", "")
-            tech = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right["Tech Coins"].Amount.Text, ",", "")
-           
-            costofegg2 = tech / egg1
-            costofegg = tech / egg2
-            enchants = diamondc / 10000
-            rank = string.gsub(game.Players.LocalPlayer.PlayerGui.Main.Right.Rank.RankName.Text, ",", "")
-        end
-        local function dif()
-            diffc = tonumber(endfc) - tonumber(startfc)
-            difd = tonumber(endd) - tonumber(startd)
-            difc = tonumber(endc) - tonumber(startc)
-            dift = tonumber(endT) - tonumber(startT) 
-         
 
-            table.insert(tablec, difc)
-            table.insert(tabled, difd)
-            table.insert(tablefc, diffc)
-            table.insert(tablet, dift)
-           
-        end
 
-        while not getgenv().stop do
-            
 
-            initialvalue()
-            start()
-            wait(timetosend)
-        
-            currentTime = currentTime + timetosend
-        
-        ending()
-        dif()
-        local webhookcheck =
-       is_sirhurt_closure and "s" or pebc_execute and "p" or syn and "s" or
-       secure_load and "s" or
-       KRNL_LOADED and "k" or
-       SONA_LOADED and "s" or
-       "e"
 
-    local url = StatWebhook
 
-    local data = {
-       ["content"] = "",
-            ["embeds"] = {{
-                ["title"] = "--**Project Sinister Stat Tracker**--",
-                ["description"] = "Project Sinister", 
-                ["type"] = "rich",
-                ["color"] = tonumber(e676ff),
-                ["fields"] = {
-                    {
-                        ["name"] = "--Username--",
-                        ["value"] = ("||%s||"):format(username),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Rank--",
-                        ["value"] = ("%s"):format(rank),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Tech Coins--",
-                        ["value"] = ("%s"):format(comma_Value(endT)),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Coins--",
-                        ["value"] = ("%s"):format(comma_Value(endc)),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Fantasy Coins--",
-                        ["value"] = ("%s"):format(comma_Value(endfc)),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Diamonds--",
-                        ["value"] = ("%s"):format(comma_Value(endd)),
-                        ["inline"] = true
-                    },
-                    {
-                        ["name"] = "--Enchant Purchases--",
-                        ["value"] = ("%s"):format(comma_Value(math.round(enchants))),
-                        ["inline"] = true
-                    }
-                },
-            },
-        }}
-    local newdata = game:GetService("HttpService"):JSONEncode(data)
 
-    local headers = {
-       ["content-type"] = "application/json"
-    }
-    request = http_request or request or HttpPost or syn.request
-    local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
-    request(abcdef)
-        end
 
-local Module = require(game:GetService("Players").LocalPlayer.PlayerScripts.ClientMain.Replications.Workers.WalkDummy)
-setconstant(Module,34,function()
-   game:GetService("RunService").Heartbeat:Wait()
-end)
+
+
+ArgetnarLib:Notify("Script", "Was Loaded!")
