@@ -85,7 +85,7 @@ Tab:AddLabel("Get Key")
 Tab:AddButton({
 	Name = "Copy link!",
 	Callback = function()
-      		setclipboard("https://discord.gg/DaKyeHFx8d")
+      		setclipboard("https://discord.gg/9WGczwFcZx")
 			  GetKeyNotifications()
   	end    
 })
