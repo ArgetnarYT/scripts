@@ -1,0 +1,254 @@
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Rayfield/main/source'))()
+
+getgenv().SelectedOption = nil
+
+
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Wins = workspace.Wins
+local StageNumber = 1 --1/2/3/4/5/6/7
+local WaitTime = 1/60 
+
+function TeleportOne()
+    local Player = Players.LocalPlayer
+    local Stage = Wins["Stage" .. StageNumber]
+
+    if not Stage then
+        break 
+		print("Error")
+    end
+
+    Player.Character:SetPrimaryPartCFrame(Stage.CFrame)
+	end
+
+
+end
+
+
+
+function doStuff()
+    if getgenv().SelectedOption == "Stage1" then
+        	local StageNumber = 1
+		TeleportOne()     
+end
+
+if getgenv().SelectedOption == "Stage2" then
+             local StageNumber = 2
+		TeleportOne()
+end
+
+if getgenv().SelectedOption == "Stage3" then
+             local StageNumber = 3
+		TeleportOne()
+end
+if getgenv().SelectedOption == "Stage4" then
+            local StageNumber = 4
+		TeleportOne()
+end
+
+if getgenv().SelectedOption == "Stage5" then
+             local StageNumber = 5
+		TeleportOne()
+end
+
+if getgenv().SelectedOption == "Stage6" then
+            local StageNumber = 6
+		TeleportOne() 
+end
+if getgenv().SelectedOption == "Stage7" then
+             local StageNumber = 7
+		TeleportOne()
+end
+if getgenv().SelectedOption == "Victory Stage" then
+             local StageNumber = 8
+		TeleportOne()
+end
+end
+
+local Window = Rayfield:CreateWindow({
+   Name = "Game exploit V3",
+   LoadingTitle = "VERSION 3",
+   LoadingSubtitle = "by NamesofUsernames",
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD.
+      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = false, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Sirius Hub",
+      Subtitle = "Key System",
+      Note = "Join the discord (discord.gg/sirius)",
+      FileName = "SiriusKey",
+      SaveKey = true,
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = "Hello"
+   }
+})
+
+local Tab = Window:CreateTab("Autofarm", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Autofarm")
+
+
+local Toggle = Tab:CreateToggle({
+   Name = "Victory Autofarm (CANNOT BE STOPPED)",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+    	while Value do
+    	local Player = Players.LocalPlayer
+    	local Stage = Wins["Stage" .. StageNumber]
+
+   		 if not Stage then
+        break 
+		print("Error")
+    end
+
+    Player.Character:SetPrimaryPartCFrame(Stage.CFrame)
+    wait(WaitTime) 
+	end
+
+end
+
+   end,
+})
+
+local Toggle = Tab:CreateToggle({
+   Name = "Rebirth Autofarm (TURN ON VICTORY AUTOFARM TOO, CANNOT BE STOPPED)",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      local player = game:GetService("Players").LocalPlayer
+	local re = game:GetService("Workspace").Model.RebirthTouch
+	local reCFrame = re.CFrame
+		while Value do
+  			  player.Character:SetPrimaryPartCFrame(reCFrame)
+  			  wait(WaitTime) 
+		end
+
+end
+
+   end,
+})
+
+local Tab = Window:CreateTab("Teleports", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Stages")
+
+local Dropdown = Tab:CreateDropdown({
+   Name = "Stages",
+   Options = {"Stage1", "Stage2","Stage3","Stage4","Stage5","Stage6","Stage7","Victory Stage"},
+   CurrentOption = "Stage 1",
+   Flag = "Dropdown1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Option)
+   getgenv().SelectedOption = Option
+   doStuff()
+   end,
+})
+
+local Section = Tab:CreateSection("Rebirth")
+
+local Button = Tab:CreateButton({
+   Name = "Rebirth Stage",
+   Callback = function()
+
+local player = game:GetService("Players").LocalPlayer
+local stage = game:GetService("Workspace").Model.RebirthTouch
+local stageCFrame = stage.CFrame
+   player.Character:SetPrimaryPartCFrame(stageCFrame)
+   end,
+   
+   
+})
+
+local Section = Tab:CreateSection("More")
+
+local Button = Tab:CreateButton({
+   Name = "Shop",
+   Callback = function()
+
+local player = game:GetService("Players").LocalPlayer
+local stage = game:GetService("Workspace").Shop.Part
+local stageCFrame = stage.CFrame
+   player.Character:SetPrimaryPartCFrame(stageCFrame)
+   end,
+   
+   
+})
+
+local Button = Tab:CreateButton({
+   Name = "Trails",
+   Callback = function()
+
+local player = game:GetService("Players").LocalPlayer
+local stage = game:GetService("Workspace").Trails.Part
+local stageCFrame = stage.CFrame
+   player.Character:SetPrimaryPartCFrame(stageCFrame)
+   end,
+   
+   
+})
+
+local Tab = Window:CreateTab("Egg", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Egg stuff")
+
+local Toggle = Tab:CreateToggle({
+   Name = "Egg auto open (NOT WORKING YET)",
+   CurrentValue = false,
+   Flag = "Toggle1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+     print("Egg opener isnt working :(")
+Rayfield:Notify({
+   Title = "Sorry!",
+   Content = "Auto Egg Opener does not work yet!",
+   Duration = 6.5,
+   Image = 4483362458,
+   Actions = { -- Notification Buttons
+      Ignore = {
+         Name = "Okay!",
+         Callback = function()
+         print("The user tapped Okay!")
+      end
+   },
+},
+})
+   end,
+})
+
+
+local Tab = Window:CreateTab("Extra", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Player")
+
+local mouse = Tab:CreateSlider({
+	Name = "Speed",
+	Range = {20, 200},
+	Increment = 10,
+	Suffix = "Speed",
+	CurrentValue = 20,
+	Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(s)
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+	end,
+})
+
+
+local mouse = Tab:CreateSlider({
+	Name = "Jump",
+	Range = {50, 500},
+	Increment = 10,
+	Suffix = "Jump",
+	CurrentValue = 20,
+	Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(s)
+		game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+	end,
+})
+
+local Tab = Window:CreateTab("Credits", 4483362458) -- Title, Image
+local Section = Tab:CreateSection("Credits")
+local Label = Tab:CreateLabel("Original - AndyGade")
+local Label = Tab:CreateLabel("Heavily modified - namesofusernames")
