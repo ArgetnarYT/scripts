@@ -5,7 +5,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "Undertale Crazy Multiverse Timeline",
    LoadingTitle = "Ver: 1.2",
-   LoadingSubtitle = "by DokuTengoku",
+   LoadingSubtitle = "by Doku",
    ConfigurationSaving = {
       Enabled = false,
       FolderName = nil, -- Create a custom folder for your hub/game
@@ -63,3 +63,10 @@ local Tab = Window:CreateTab("Credits", 4483362458) -- Title, Image
 local Label = Tab:CreateLabel("Creators:")
 local Paragraph = Tab:CreateParagraph({Title = "Funcions:", Content = "DokuTengoku"})
 local Paragraph = Tab:CreateParagraph({Title = "Gui:", Content = "Rayfield"})
+local Paragraph = Tab:CreateParagraph({Title = "Discord:"})
+local Button = Tab:CreateButton({
+   Name = "Tap to copy.",
+   Callback = function()
+   setclipboard("9WGczwFcZx")
+   end,
+})
