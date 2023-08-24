@@ -63,7 +63,7 @@ local Tab = Window:CreateTab("Credits", 4483362458) -- Title, Image
 local Label = Tab:CreateLabel("Creators:")
 local Paragraph = Tab:CreateParagraph({Title = "Funcions:", Content = "DokuTengoku"})
 local Paragraph = Tab:CreateParagraph({Title = "Gui:", Content = "Rayfield"})
-local Paragraph = Tab:CreateParagraph({Title = "Discord:"})
+local Label = Tab:CreateLabel("Discord:")
 local Button = Tab:CreateButton({
    Name = "Tap to copy.",
    Callback = function()
