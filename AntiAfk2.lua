@@ -1,4 +1,5 @@
---Obfuscation is written by Doku kun4ik :3
+--Script written by Doku kun4ik :3
+--Discord: "https://discord.gg/zuSHBrjsQn"
 local v0 = tonumber;
 local v1 = string.byte;
 local v2 = string.char;
